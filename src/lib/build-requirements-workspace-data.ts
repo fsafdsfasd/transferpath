@@ -1,0 +1,364 @@
+import type { UserCourseRow } from "@/lib/get-course-requirement-status"
+import type { PrereqKey } from "@/lib/prereq-catalog"
+import {
+  academicDisplayToRequirementStatus,
+  buildRecLettersApplicationStatus,
+  buildSimpleApplicationStatus,
+  buildTransferEssayApplicationStatus,
+  mergedPrereqAcademicRow,
+  type ChecklistCompleteByTaskKey,
+} from "@/lib/requirements-checklist-sync"
+import {
+  fieldOfStudyOrDefault,
+  fieldPrereqRowFraming,
+  prereqKeysForField,
+} from "@/lib/field-of-study"
+import {
+  formatDueDateDisplay,
+  type NextDeadline,
+  type RequirementDeadlineRow,
+} from "@/lib/next-deadline"
+import { PLANNER_CREDIT_TARGET } from "@/lib/planner-constants"
+import { isChecklistTaskComplete } from "@/lib/requirements-checklist-sync"
+import { settingsPath } from "@/lib/settings-tab"
+import type { UniversityRequirementNote } from "@/types"
+import type {
+  RequirementWorkspaceCategory,
+  RequirementWorkspaceItem,
+  RequirementsWorkspaceData,
+} from "@/types/requirements-workspace"
+
+const TIMELINE_COURSES_HASH = "/dashboard/timeline#semester-roadmap"
+
+const COMMON_PREREQ_KEYS = new Set(["english_comp_1", "english_comp_2", "gov"])
+
+export type RequirementsBuildProfile = {
+  gpa: number | null
+  credits_completed: number | null
+  target_major: string | null
+  field_of_study: string | null
+  expected_transfer_term: string | null
+  current_university: { name: string } | null
+  target_university: { name: string } | null
+}
+
+type EssaySnippet = { id: string; content: string | null }
+
+type AcademicDisplayStatus = "done" | "in-progress" | "warning"
+
+type AcademicRow = {
+  rowKey: string
+  name: string
+  required: string
+  have: string
+  status: AcademicDisplayStatus
+}
+
+const MINIMAL_FALLBACK_REQUIREMENT_NOTES: UniversityRequirementNote[] = [
+  {
+    id: "static-fallback-verify",
+    university_id: null,
+    sort_order: 0,
+    title: "Always verify on official pages",
+    body: "Illustrative planning text cannot replace your target institution\u2019s live admissions, aid, and registrar information. Set a target school in Settings when you want school-specific notes.",
+    optional_url: null,
+  },
+  {
+    id: "static-fallback-applytexas",
+    university_id: null,
+    sort_order: 1,
+    title: "Texas application platforms",
+    body: "Many Texas public institutions use ApplyTexas; others may require a separate portal. Confirm on each school\u2019s official application instructions.",
+    optional_url: "https://www.goapplytexas.org/",
+  },
+]
+
+function buildAcademicRows(
+  userCourses: UserCourseRow[],
+  gpa: number | null,
+  credits: number | null,
+  fieldRaw: string | null,
+  checklist: ChecklistCompleteByTaskKey
+): { common: AcademicRow[]; fieldSpecific: AcademicRow[]; profile: AcademicRow[] } {
+  const field = fieldOfStudyOrDefault(fieldRaw)
+  const keys = prereqKeysForField(field)
+  const commonKeys = keys.filter((k) => COMMON_PREREQ_KEYS.has(k))
+  const fieldKeys = keys.filter((k) => !COMMON_PREREQ_KEYS.has(k))
+
+  const common: AcademicRow[] = commonKeys.map((k) =>
+    mergedPrereqAcademicRow(
+      k as PrereqKey,
+      userCourses,
+      checklist,
+      "Common transfer prep (statewide context)"
+    )
+  )
+
+  const fieldSpecific: AcademicRow[] = fieldKeys.map((k) =>
+    mergedPrereqAcademicRow(
+      k as PrereqKey,
+      userCourses,
+      checklist,
+      fieldPrereqRowFraming(field, k as PrereqKey)
+    )
+  )
+
+  let creditsHave: string
+  let creditsStatus: AcademicDisplayStatus
+  const creditsChecklistDone = isChecklistTaskComplete(checklist, "reach_30_credits")
+  if (credits === null) {
+    if (creditsChecklistDone) {
+      creditsHave = "Marked complete on checklist"
+      creditsStatus = "done"
+    } else {
+      creditsHave = "—"
+      creditsStatus = "warning"
+    }
+  } else if (credits >= PLANNER_CREDIT_TARGET || creditsChecklistDone) {
+    creditsHave = `${credits} completed`
+    creditsStatus = "done"
+  } else if (credits > 0) {
+    creditsHave = `${credits} completed`
+    creditsStatus = "in-progress"
+  } else {
+    creditsHave = `${credits} completed`
+    creditsStatus = "warning"
+  }
+
+  let gpaHave: string
+  let gpaStatus: AcademicDisplayStatus
+  const gpaChecklistDone = isChecklistTaskComplete(checklist, "maintain_gpa_3_5")
+  if (gpa === null) {
+    if (gpaChecklistDone) {
+      gpaHave = "Marked complete on checklist"
+      gpaStatus = "done"
+    } else {
+      gpaHave = "—"
+      gpaStatus = "warning"
+    }
+  } else if (gpa >= 3.0 || gpaChecklistDone) {
+    gpaHave = gpa.toFixed(2)
+    gpaStatus = "done"
+  } else {
+    gpaHave = gpa.toFixed(2)
+    gpaStatus = "warning"
+  }
+
+  const profile: AcademicRow[] = [
+    {
+      rowKey: "credits",
+      name: `Minimum ${PLANNER_CREDIT_TARGET} credit hours (planner target)`,
+      required: "Planner target (verify with your school)",
+      have: creditsHave,
+      status: creditsStatus,
+    },
+    {
+      rowKey: "gpa",
+      name: "Minimum 3.0 GPA (common benchmark)",
+      required: "Planner benchmark — confirm on official pages",
+      have: gpaHave,
+      status: gpaStatus,
+    },
+  ]
+
+  return { common, fieldSpecific, profile }
+}
+
+function coursePrereqRowToItem(row: AcademicRow): RequirementWorkspaceItem {
+  return {
+    id: `academic-${row.rowKey}`,
+    code: "—",
+    title: row.name,
+    credits: 0,
+    equiv: `${row.required} · You: ${row.have}`,
+    status: academicDisplayToRequirementStatus(row.status),
+    ctaLabel: "Details",
+    href: TIMELINE_COURSES_HASH,
+  }
+}
+
+function profileMetricRowToItem(row: AcademicRow): RequirementWorkspaceItem {
+  return {
+    id: `academic-${row.rowKey}`,
+    code: "—",
+    title: row.name,
+    credits: 0,
+    equiv: `${row.required} · You: ${row.have}`,
+    status: academicDisplayToRequirementStatus(row.status),
+  }
+}
+
+function buildDeadlineTimeline(deadlines: RequirementDeadlineRow[], todayYmd: string) {
+  let assignedCurrent = false
+  return deadlines.map((d) => {
+    const passed = d.due_date < todayYmd
+    const current = !passed && !assignedCurrent
+    if (current) assignedCurrent = true
+    const recommended =
+      /priority|early/i.test(d.title) ||
+      (d.description?.toLowerCase().includes("[priority]") ?? false)
+    return {
+      id: d.id,
+      dateLabel: formatDueDateDisplay(d.due_date),
+      label: d.title,
+      scope: d.timelineScope,
+      officialUrl: d.officialUrl,
+      passed,
+      current,
+      recommended,
+    }
+  })
+}
+
+export type BuildRequirementsWorkspaceInput = {
+  profile: RequirementsBuildProfile | null
+  userCourses: UserCourseRow[]
+  essays: EssaySnippet[]
+  deadlines: RequirementDeadlineRow[]
+  requirementNotes: UniversityRequirementNote[]
+  nextDeadline: NextDeadline
+  hasTargetUniversity: boolean
+  timelineTodayYmd: string
+  checklistCompleteByTaskKey: ChecklistCompleteByTaskKey
+}
+
+export function buildRequirementsWorkspaceData(
+  input: BuildRequirementsWorkspaceInput
+): RequirementsWorkspaceData {
+  const profile = input.profile
+  const gpa = profile?.gpa ?? null
+  const credits = profile?.credits_completed ?? null
+  const targetName = profile?.target_university?.name ?? "your target school"
+  const currentName = profile?.current_university?.name ?? "your college"
+  const major = profile?.target_major ?? "your major"
+  const term = profile?.expected_transfer_term ?? null
+  const fieldBucket = profile?.field_of_study ?? null
+
+  const checklist = input.checklistCompleteByTaskKey
+
+  const { common, fieldSpecific, profile: profileRows } = buildAcademicRows(
+    input.userCourses,
+    gpa,
+    credits,
+    fieldBucket,
+    checklist
+  )
+
+  const essayStarted = input.essays.some((e) => (e.content ?? "").trim().length > 0)
+  const essayApp = buildTransferEssayApplicationStatus(checklist, essayStarted)
+  const recApp = buildRecLettersApplicationStatus(checklist)
+  const transcriptApp = buildSimpleApplicationStatus("app-transcript", checklist, {
+    missingEquiv: "Not requested",
+    doneEquiv: "Requested",
+  })
+  const applyTexasApp = buildSimpleApplicationStatus("app-applytexas", checklist, {
+    missingEquiv: "Confirm open dates on official pages",
+    doneEquiv: "Account created",
+  })
+
+  const applicationItems: RequirementWorkspaceItem[] = [
+    {
+      id: "app-essay",
+      code: "—",
+      title: "Transfer essay",
+      credits: 0,
+      equiv: essayApp.equiv,
+      status: essayApp.status,
+      ctaLabel: "Start essay",
+      href: "/dashboard/essay",
+    },
+    {
+      id: "app-transcript",
+      code: "—",
+      title: `Official transcript from ${currentName}`,
+      credits: 0,
+      equiv: transcriptApp.equiv,
+      status: transcriptApp.status,
+      ctaLabel: "How to request",
+      href: settingsPath("help", "request-transcript"),
+    },
+    {
+      id: "app-rec",
+      code: "—",
+      title: "Recommendation letters",
+      credits: 0,
+      equiv: recApp.equiv,
+      status: recApp.status,
+      ctaLabel: "Who to ask",
+      href: settingsPath("help", "rec-letters"),
+    },
+    {
+      id: "app-applytexas",
+      code: "—",
+      title: "ApplyTexas application",
+      credits: 0,
+      equiv: applyTexasApp.equiv,
+      status: applyTexasApp.status,
+      ctaLabel: "ApplyTexas",
+      href: "https://www.goapplytexas.org/",
+      external: true,
+    },
+  ]
+
+  const categories: RequirementWorkspaceCategory[] = []
+
+  if (common.length > 0) {
+    categories.push({
+      id: "common",
+      name: "Common transfer prep",
+      items: common.map(coursePrereqRowToItem),
+    })
+  }
+
+  if (fieldSpecific.length > 0) {
+    categories.push({
+      id: "field",
+      name: `For your field · ${major}`,
+      items: fieldSpecific.map(coursePrereqRowToItem),
+    })
+  }
+
+  if (profileRows.length > 0) {
+    categories.push({
+      id: "profile",
+      name: "On your profile",
+      items: profileRows.map(profileMetricRowToItem),
+    })
+  }
+
+  categories.push({
+    id: "application",
+    name: "Application materials",
+    items: applicationItems,
+  })
+
+  const globalPlanningNotes = input.requirementNotes.filter((n) => n.university_id == null)
+  const planningNotes =
+    globalPlanningNotes.length > 0 ? globalPlanningNotes : MINIMAL_FALLBACK_REQUIREMENT_NOTES
+
+  const planningNotesIntro =
+    "Texas-wide transfer context that applies no matter which school you choose — planning only, not official requirements."
+
+  const termPhrase = term ? ` · ${term}` : ""
+  const subtitle = targetName
+    ? `Planning view for ${targetName} — ${major}${termPhrase}. Course status from ${currentName}; verify equivalencies on official pages.`
+    : `Set a target school in Settings. We track courses from ${currentName} against statewide and field-aware prep suggestions.`
+
+  return {
+    header: {
+      eyebrow: "Requirements",
+      title: "Major-specific pathway,",
+      titleItalic: "audited.",
+      subtitle,
+    },
+    categories,
+    planningNotes: planningNotes.map((n) => ({
+      id: n.id,
+      title: n.title,
+      body: n.body,
+      optionalUrl: n.optional_url,
+    })),
+    planningNotesIntro,
+    timelineRows: buildDeadlineTimeline(input.deadlines, input.timelineTodayYmd),
+  }
+}
