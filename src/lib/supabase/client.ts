@@ -1,15 +1,15 @@
-import { createBrowserClient } from "@supabase/ssr";
+import { createBrowserClient } from "@supabase/ssr"
+import { hasSupabasePublicEnv, supabaseAnonKey, supabaseUrl } from "@/lib/supabase/env"
 
 /**
- * Creates a Supabase client for use in Client Components (browser).
- * Uses `createBrowserClient` from `@supabase/ssr` so the session follows Supabase + Next.js
- * App Router cookie patterns. The anon key is safe to expose; RLS enforces access.
- * Prefer **server actions** or `createClient` from `@/lib/supabase/server` for writes that must
- * honor the HTTP-only session (e.g. settings profile updates).
+ * Supabase client for Client Components (browser).
+ * Uses @supabase/ssr for App Router cookie session handling.
  */
 export function createClient() {
-  return createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+  if (!hasSupabasePublicEnv()) {
+    throw new Error(
+      "Supabase is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY, then redeploy."
+    )
+  }
+  return createBrowserClient(supabaseUrl, supabaseAnonKey)
 }

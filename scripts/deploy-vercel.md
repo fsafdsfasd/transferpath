@@ -24,6 +24,10 @@ chmod +x scripts/publish-to-github.sh
 
 5. Deploy. Copy the production URL.
 
+6. **Verify env on the server** (after deploy): open  
+   `https://YOUR-PROJECT.vercel.app/api/health/supabase`  
+   You should see `"ok": true` and `"anonKeyFormat": "jwt"`. If `"ok": false`, fix env vars and **redeploy** (disable build cache).
+
 ## 3. Supabase auth URLs
 
 Supabase Dashboard → **Authentication** → **URL configuration**:
