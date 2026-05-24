@@ -11,13 +11,12 @@ const publicRoutes = [
   "/auth/callback",
   "/privacy",
   "/terms",
-  "/api/health",
 ]
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  if (publicRoutes.some((route) => pathname === route || pathname.startsWith("/api/health"))) {
+  if (pathname.startsWith("/api/health")) {
     return NextResponse.next({ request })
   }
 
@@ -42,11 +41,14 @@ export async function middleware(request: NextRequest) {
     },
   })
 
+  // Refresh session cookies on every navigation (Supabase SSR recommendation).
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (pathname.startsWith("/dashboard") && !user) {
+  const isPublic = publicRoutes.some((route) => pathname === route)
+
+  if (!isPublic && pathname.startsWith("/dashboard") && !user) {
     const url = request.nextUrl.clone()
     url.pathname = "/login"
     return NextResponse.redirect(url)

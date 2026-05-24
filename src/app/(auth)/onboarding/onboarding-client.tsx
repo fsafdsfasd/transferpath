@@ -9,10 +9,11 @@ import { OnboardingStep4 } from "@/components/onboarding/step-4"
 import { OnboardingStep5 } from "@/components/onboarding/step-5"
 import { OnboardingLoading } from "@/components/onboarding/loading"
 import { createClient } from "@/lib/supabase/client"
+import { persistOnboardingForUser } from "@/lib/onboarding-persist"
 import type { OnboardingData } from "@/types/onboarding"
 import { PRODUCT_NAME } from "@/lib/brand"
 
-const steps=[
+const steps = [
   { id: 1, label: "School" },
   { id: 2, label: "Target" },
   { id: 3, label: "Major & field" },
@@ -25,6 +26,10 @@ export type ExistingSession = { id: string; email: string }
 export interface OnboardingClientProps {
   /** When set, wizard skips sign-up and upserts `user_profiles` for this user. */
   existingSession: ExistingSession | null
+}
+
+function isSessionMissingError(message: string): boolean {
+  return /session missing/i.test(message)
 }
 
 export function OnboardingClient({ existingSession }: OnboardingClientProps) {
@@ -56,122 +61,116 @@ export function OnboardingClient({ existingSession }: OnboardingClientProps) {
     setData((prev) => ({ ...prev, ...updates }))
   }
 
+  async function finishAndGoToDashboard() {
+    setSubmitting(false)
+    setIsLoading(true)
+    router.refresh()
+    window.location.assign("/dashboard")
+  }
+
   async function handleSubmit() {
     setSubmitError("")
     setSubmitting(true)
 
-    const supabase = createClient()
-    const {
-      data: { user: sessionUser },
-      error: sessionErr,
-    } = await supabase.auth.getUser()
-
-    if (sessionErr) {
-      setSubmitError(sessionErr.message)
+    let supabase
+    try {
+      supabase = createClient()
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : "Could not connect to Supabase.")
       setSubmitting(false)
       return
     }
 
-    let userId: string
-    let profileEmail: string
+    const origin = window.location.origin
 
-    if (sessionUser) {
-      userId = sessionUser.id
-      profileEmail = sessionUser.email?.trim() || data.email.trim()
+    if (hasExistingAuth) {
+      const {
+        data: { user: sessionUser },
+        error: sessionErr,
+      } = await supabase.auth.getUser()
+
+      if (sessionErr || !sessionUser) {
+        const msg = sessionErr?.message ?? "Your session expired."
+        setSubmitError(
+          isSessionMissingError(msg)
+            ? "Your session expired. Please log in again, then finish onboarding."
+            : msg
+        )
+        setSubmitting(false)
+        return
+      }
+
+      const profileEmail = sessionUser.email?.trim() || data.email.trim()
       if (!profileEmail) {
         setSubmitError("Your account has no email on file.")
         setSubmitting(false)
         return
       }
 
-      const { error: profileError } = await supabase.from("user_profiles").upsert(
-        {
-          id: userId,
-          email: profileEmail,
-          current_university_id: data.currentSchoolId || null,
-          target_university_id: data.targetUniversityIds[0] || null,
-          target_major: data.major,
-          field_of_study: data.fieldOfStudy !== "" ? data.fieldOfStudy : "other",
-          expected_transfer_term: data.targetSemester,
-          gpa: data.gpa ? parseFloat(data.gpa) : null,
-          credits_completed: data.creditsCompleted ? parseInt(data.creditsCompleted, 10) : null,
-          notify_deadline_reminders: data.sendReminders,
-        },
-        { onConflict: "id" }
+      const { error: persistErr } = await persistOnboardingForUser(
+        supabase,
+        sessionUser.id,
+        profileEmail,
+        data
       )
-
-      if (profileError) {
-        setSubmitError(profileError.message)
-        setSubmitting(false)
-        return
-      }
-    } else {
-      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-        email: data.email,
-        password: data.password,
-      })
-
-      if (signUpError) {
-        setSubmitError(signUpError.message)
+      if (persistErr) {
+        setSubmitError(persistErr)
         setSubmitting(false)
         return
       }
 
-      const newUserId = signUpData.user?.id
-      if (!newUserId) {
-        setSubmitError("Account created but no session returned. Check your email or try logging in.")
-        setSubmitting(false)
-        return
-      }
-
-      userId = newUserId
-      profileEmail = data.email
-
-      const { error: profileError } = await supabase.from("user_profiles").upsert(
-        {
-          id: userId,
-          email: profileEmail,
-          current_university_id: data.currentSchoolId || null,
-          target_university_id: data.targetUniversityIds[0] || null,
-          target_major: data.major,
-          field_of_study: data.fieldOfStudy !== "" ? data.fieldOfStudy : "other",
-          expected_transfer_term: data.targetSemester,
-          gpa: data.gpa ? parseFloat(data.gpa) : null,
-          credits_completed: data.creditsCompleted ? parseInt(data.creditsCompleted, 10) : null,
-          notify_deadline_reminders: data.sendReminders,
-        },
-        { onConflict: "id" }
-      )
-
-      if (profileError) {
-        setSubmitError(profileError.message)
-        setSubmitting(false)
-        return
-      }
+      await finishAndGoToDashboard()
+      return
     }
 
-    if (data.completedCourses.length > 0) {
-      const { data: canonicalMatches } = await supabase
-        .from("canonical_courses")
-        .select("id, course_name")
-        .in("course_name", data.completedCourses)
+    // New account: sign up first — do NOT call getUser() before a session exists.
+    const email = data.email.trim()
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password: data.password,
+      options: {
+        emailRedirectTo: `${origin}/auth/callback`,
+      },
+    })
 
-      if (canonicalMatches && canonicalMatches.length > 0) {
-        await supabase.from("user_courses").insert(
-          canonicalMatches.map((c) => ({
-            user_id: userId,
-            canonical_course_id: c.id,
-            course_name: c.course_name,
-            status: "completed",
-          }))
-        )
-      }
+    if (signUpError) {
+      setSubmitError(signUpError.message)
+      setSubmitting(false)
+      return
     }
 
-    setSubmitting(false)
-    setIsLoading(true)
-    router.push("/dashboard")
-    router.refresh()
+    const newUser = signUpData.user
+    if (!newUser?.id) {
+      setSubmitError("Could not create your account. Try again or use Log in if you already signed up.")
+      setSubmitting(false)
+      return
+    }
+
+    const { data: sessionData } = await supabase.auth.getSession()
+    const session = sessionData.session ?? signUpData.session
+
+    if (!session) {
+      setSubmitting(false)
+      setSubmitError(
+        "Account created. Check your email for a confirmation link, then log in to finish setting up your path."
+      )
+      router.push(`/login?signup=confirm-email&email=${encodeURIComponent(email)}`)
+      return
+    }
+
+    const { error: persistErr } = await persistOnboardingForUser(
+      supabase,
+      newUser.id,
+      email,
+      data
+    )
+    if (persistErr) {
+      setSubmitError(persistErr)
+      setSubmitting(false)
+      return
+    }
+
+    await finishAndGoToDashboard()
   }
 
   const handleNext = () => {

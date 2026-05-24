@@ -118,6 +118,8 @@ Supabase → **Authentication** → **URL configuration**:
 - Site URL: `http://localhost:3000`
 - Redirect URLs: `http://localhost:3000/auth/callback`
 
+**Sign-up / login tip:** Under **Authentication** → **Providers** → **Email**, turn **off** “Confirm email” while testing so onboarding finishes in one step and login works immediately. Turn it back on for production if you want verified addresses.
+
 ### 5. Run
 
 ```bash

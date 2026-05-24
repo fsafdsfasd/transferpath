@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Eye, EyeOff, Loader2, X, Check } from "lucide-react"
@@ -66,6 +66,19 @@ export default function LoginPage() {
   const configIssue = supabasePublicEnvIssue()
   const supabaseReady = hasSupabasePublicEnv() && !configIssue
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (params.get("signup") === "confirm-email") {
+      setError(
+        "We created your account. Open the confirmation link in your email, then log in here to finish setup."
+      )
+    } else if (params.get("error") === "auth_failed") {
+      setError("Sign-in link failed or expired. Try logging in with your email and password.")
+    }
+    const prefill = params.get("email")
+    if (prefill) setEmail(prefill)
+  }, [])
+
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
     setError("")
@@ -101,6 +114,14 @@ export default function LoginPage() {
         setError(
           "Invalid Supabase anon key. Use the anon public JWT from Supabase → Project Settings → API, not the service_role secret."
         )
+      } else if (msg.includes("Email not confirmed") || msg.includes("email_not_confirmed")) {
+        setError(
+          "Confirm your email first (check your inbox for a link from Supabase), then log in again."
+        )
+      } else if (msg.includes("Invalid login credentials")) {
+        setError(
+          "Wrong email or password. If you just signed up, confirm your email first or use Get started to create an account."
+        )
       } else {
         setError(msg)
       }
@@ -109,7 +130,10 @@ export default function LoginPage() {
     }
 
     setShowToast(true)
-    setTimeout(() => router.push("/dashboard"), 1200)
+    router.refresh()
+    setTimeout(() => {
+      window.location.assign("/dashboard")
+    }, 800)
   }
 
   return (
