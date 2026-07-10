@@ -149,7 +149,7 @@ function WorkspaceSectionHeader({
     <div className="mb-4 space-y-1">
       <div className="flex items-baseline justify-between gap-4">
         <h2 className="font-heading text-2xl text-foreground">{title}</h2>
-        <p className="shrink-0 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+        <p className="shrink-0 text-[11px] uppercase tracking-widest text-muted-foreground">
           {meta}
         </p>
       </div>
@@ -273,11 +273,12 @@ export function RequirementsWorkspaceUi({
   return (
     <div className="mx-auto max-w-6xl space-y-10 tp-stagger-children">
       <header>
-        <p className="font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-accent">
+        <p className="text-[11px] font-medium uppercase tracking-widest text-accent">
           {h.eyebrow ?? "Requirements"}
         </p>
-        <h1 className="mt-3 font-heading text-4xl tracking-tight text-foreground md:text-5xl">
-          {h.title} <span className="italic">{h.titleItalic}</span>
+        <h1 className="mt-3 font-heading text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
+          {h.title}
+          {h.titleItalic ? <> {h.titleItalic}</> : null}
         </h1>
         <p className="mt-2 max-w-xl text-sm text-muted-foreground">{h.subtitle}</p>
       </header>
@@ -302,7 +303,7 @@ export function RequirementsWorkspaceUi({
           tone="muted"
         />
         <div className="flex min-h-[140px] flex-col items-center justify-center rounded-2xl border border-border bg-primary p-6 text-center text-primary-foreground tp-interactive-panel">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-accent">
+          <p className="text-[11px] font-medium uppercase tracking-widest text-accent">
             Overall completion
           </p>
           <p className="mt-3 font-heading text-4xl tabular-nums">{pct}%</p>

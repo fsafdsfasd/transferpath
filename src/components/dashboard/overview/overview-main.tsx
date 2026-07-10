@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { AlertCircle, ArrowUpRight, Flame, Sparkles } from "lucide-react"
+import { AlertCircle, ArrowUpRight, Flame } from "lucide-react"
 import { cn } from "@/lib/utils"
 import type { OverviewData } from "@/types/overview"
 import { ReadinessRing, RoadmapTrack, SubMetricBar } from "@/components/dashboard/overview/overview-parts"
@@ -41,7 +41,7 @@ export function OverviewMain({ data }: OverviewMainProps) {
         )}
       >
         <div>
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-accent">
+          <p className="text-[11px] font-medium uppercase tracking-widest text-accent">
             {user.todayLabel}
           </p>
           <h1
@@ -50,7 +50,7 @@ export function OverviewMain({ data }: OverviewMainProps) {
               compact ? "text-3xl md:text-4xl" : "text-4xl md:text-5xl"
             )}
           >
-            <span className="italic">{user.greetingLine}</span>
+            {user.greetingLine}
           </h1>
           <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground md:text-[15px]">
             {user.subcopy}
@@ -79,7 +79,7 @@ export function OverviewMain({ data }: OverviewMainProps) {
             compact ? "p-5 sm:p-6" : "p-6 sm:p-8"
           )}
         >
-          <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-accent">
+          <p className="text-xs font-medium uppercase tracking-wide text-accent/90">
             Transfer readiness
           </p>
           <div className="mt-6 flex flex-col items-start gap-8 sm:flex-row sm:items-end sm:gap-10">
@@ -107,9 +107,7 @@ export function OverviewMain({ data }: OverviewMainProps) {
         >
           <div className="flex items-center gap-2">
             <Flame className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
-            <p className="font-mono text-[10px] font-bold uppercase tracking-widest">
-              Next critical action
-            </p>
+            <p className="text-xs font-medium uppercase tracking-wide">Next step</p>
           </div>
           <h3 className="mt-5 font-heading text-2xl leading-tight md:text-3xl">{nextAction.title}</h3>
           <p className="mt-3 text-sm text-accent-foreground/80">{nextAction.dueLabel}</p>
@@ -118,7 +116,7 @@ export function OverviewMain({ data }: OverviewMainProps) {
               href={nextAction.primaryHref}
               className="rounded-sm bg-primary/90 px-5 py-2.5 text-sm font-medium text-primary-foreground transition hover:bg-primary"
             >
-              Execute task
+              Go to task
             </Link>
             <Link
               href="/dashboard/checklist"
@@ -129,7 +127,7 @@ export function OverviewMain({ data }: OverviewMainProps) {
           </div>
           {nextAction.followUpLabel ? (
             <div className="mt-8 border-t border-primary-foreground/20 pt-4">
-              <p className="font-mono text-[10px] uppercase tracking-widest opacity-70">Then up next</p>
+              <p className="text-[11px] uppercase tracking-widest opacity-70">Then up next</p>
               <p className="mt-1 text-sm">{nextAction.followUpLabel}</p>
             </div>
           ) : null}
@@ -144,7 +142,7 @@ export function OverviewMain({ data }: OverviewMainProps) {
       >
         <div className="mb-8 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
           <div className="min-w-0 flex-1">
-            <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
               Your roadmap
             </p>
             <h2 className="mt-2 font-heading text-balance text-xl leading-snug text-foreground md:text-2xl">
@@ -154,7 +152,7 @@ export function OverviewMain({ data }: OverviewMainProps) {
               ) : null}
             </h2>
             {pathway.semesterCount > 0 ? (
-              <p className="mt-1 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+              <p className="mt-1 text-[11px] uppercase tracking-widest text-muted-foreground">
                 {pathway.semesterCount} phase{pathway.semesterCount === 1 ? "" : "s"} on your timeline
               </p>
             ) : null}
@@ -179,7 +177,7 @@ export function OverviewMain({ data }: OverviewMainProps) {
           <div className="mb-6 flex items-center justify-between gap-4">
             <h2 className="font-heading text-xl text-foreground md:text-2xl">Upcoming deadlines</h2>
             {deadlinesCycleLabel ? (
-              <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+              <span className="text-[11px] uppercase tracking-widest text-muted-foreground">
                 {deadlinesCycleLabel}
               </span>
             ) : null}
@@ -196,7 +194,7 @@ export function OverviewMain({ data }: OverviewMainProps) {
                   className="flex items-center justify-between gap-3 rounded-sm border border-border px-4 py-3.5 transition-colors hover:border-border-strong"
                 >
                   <div className="flex min-w-0 items-center gap-4">
-                    <span className="w-14 shrink-0 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground sm:w-16">
+                    <span className="w-14 shrink-0 text-[11px] font-medium uppercase tracking-widest text-muted-foreground sm:w-16">
                       {d.date}
                     </span>
                     <div className="flex min-w-0 items-center gap-3">
@@ -213,7 +211,7 @@ export function OverviewMain({ data }: OverviewMainProps) {
                       <span className="truncate text-sm font-medium">{d.title}</span>
                     </div>
                   </div>
-                  <span className="hidden shrink-0 font-mono text-[10px] uppercase tracking-widest text-muted-foreground sm:inline">
+                  <span className="hidden shrink-0 text-[11px] uppercase tracking-widest text-muted-foreground sm:inline">
                     {d.tag}
                   </span>
                 </div>
@@ -249,7 +247,7 @@ export function OverviewMain({ data }: OverviewMainProps) {
                     <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-accent" strokeWidth={1.5} />
                     <div>
                       <p className="text-sm font-semibold">{r.title}</p>
-                      <p className="mt-0.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                      <p className="mt-0.5 text-[11px] uppercase tracking-widest text-muted-foreground">
                         {r.code} · {r.note}
                       </p>
                     </div>
@@ -264,7 +262,7 @@ export function OverviewMain({ data }: OverviewMainProps) {
       {recommendedActions.length > 0 ? (
         <section>
           <div className="mb-6">
-            <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-accent">
+            <p className="text-xs font-medium uppercase tracking-wide text-accent">
               Recommended next
             </p>
             <h2 className="mt-2 font-heading text-2xl text-foreground md:text-3xl">
@@ -278,9 +276,8 @@ export function OverviewMain({ data }: OverviewMainProps) {
                 href={a.href}
                 className="group flex flex-col rounded-2xl border border-border bg-card p-6 transition-colors hover:border-accent/40 tp-interactive-panel"
               >
-                <div className="mb-4 inline-flex w-fit items-center gap-2 rounded-full border border-accent/30 bg-accent-soft px-2.5 py-1 text-accent">
-                  <Sparkles className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden />
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest">
+                <div className="mb-4 inline-flex w-fit items-center rounded-full border border-border bg-secondary px-2.5 py-1 text-muted-foreground">
+                  <span className="text-xs font-medium uppercase tracking-wide">
                     {a.eyebrow}
                   </span>
                 </div>

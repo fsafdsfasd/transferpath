@@ -74,12 +74,14 @@ export function EssayWorkspaceUi({
     <div className={cn("mx-auto max-w-7xl space-y-8 animate-fade-in tp-stagger-children", className)}>
       <header className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
         <div>
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-accent">
+          <p className="text-[11px] font-medium uppercase tracking-widest text-accent">
             {essay.eyebrow ?? "Essay workspace"}
           </p>
-          <h1 className="mt-3 font-heading text-4xl tracking-tight text-foreground md:text-[2.5rem]">
+          <h1 className="mt-3 font-heading text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
             {essay.title}
-            {essay.subtitle ? <span className="italic"> — {essay.subtitle}</span> : null}
+            {essay.subtitle ? (
+              <span className="font-normal text-muted-foreground"> — {essay.subtitle}</span>
+            ) : null}
           </h1>
           {essay.tagline ? (
             <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground md:text-[15px]">
@@ -113,10 +115,10 @@ export function EssayWorkspaceUi({
           <div className="absolute left-0 right-0 top-0 h-1 bg-accent" aria-hidden />
 
           <div className="border-b border-border px-6 pt-8 pb-6 sm:px-10 sm:pt-10">
-            <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+            <p className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground">
               Prompt
             </p>
-            <p className="mt-2 font-heading text-lg italic leading-snug text-foreground/85">
+            <p className="mt-2 text-base leading-relaxed text-foreground/85">
               {essay.prompt}
             </p>
             {settingsSlot ? <div className="mt-5">{settingsSlot}</div> : null}
@@ -127,7 +129,7 @@ export function EssayWorkspaceUi({
               value={value}
               onChange={(e) => onChange(e.target.value)}
               className="min-h-[440px] w-full resize-y border-0 bg-transparent font-heading text-xl leading-[1.7] text-foreground outline-none placeholder:text-muted-foreground/40 focus:ring-0"
-              placeholder="Begin where the truth is..."
+              placeholder="Start writing your draft here…"
               aria-label="Essay draft"
             />
           </div>
@@ -135,7 +137,7 @@ export function EssayWorkspaceUi({
           <div className="flex flex-col gap-4 border-t border-border px-6 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-10">
             <div className="flex items-center gap-6">
               <div>
-                <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                <p className="text-[11px] uppercase tracking-widest text-muted-foreground">
                   Word count
                 </p>
                 <p
@@ -161,7 +163,7 @@ export function EssayWorkspaceUi({
               </div>
             </div>
             {essay.autosaveLabel ? (
-              <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+              <p className="text-[11px] uppercase tracking-widest text-muted-foreground">
                 {essay.autosaveLabel}
               </p>
             ) : null}
@@ -187,16 +189,16 @@ export function EssayWorkspaceUi({
           ) : null}
           {reference ? (
             <div className="rounded-2xl border border-border bg-primary p-6 text-primary-foreground">
-              <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-accent">
+              <p className="text-[11px] font-medium uppercase tracking-widest text-accent">
                 {reference.eyebrow}
               </p>
-              <p className="mt-3 font-heading text-lg italic leading-snug text-primary-foreground/90">
+              <p className="mt-3 text-base leading-relaxed text-primary-foreground/90">
                 {reference.body}
               </p>
               <button
                 type="button"
                 onClick={reference.onCtaClick}
-                className="mt-5 w-full rounded-sm border border-primary-foreground/20 bg-primary-foreground/10 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest backdrop-blur-sm transition hover:bg-primary-foreground/15"
+                className="mt-5 w-full rounded-sm border border-primary-foreground/20 bg-primary-foreground/10 py-2.5 text-[11px] font-medium uppercase tracking-widest backdrop-blur-sm transition hover:bg-primary-foreground/15"
               >
                 {reference.ctaLabel}
               </button>
@@ -223,7 +225,7 @@ function CoachPanel({
     <div className="rounded-2xl border border-border bg-card p-6 tp-interactive-panel">
       <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent-soft px-2.5 py-1 text-accent">
         {icon}
-        <span className="font-mono text-[10px] font-bold uppercase tracking-widest">{label}</span>
+        <span className="text-[11px] font-medium uppercase tracking-widest">{label}</span>
       </div>
       <p className="mb-3 font-heading text-lg leading-snug text-foreground">{title}</p>
       <ul className="space-y-2.5">

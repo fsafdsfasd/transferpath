@@ -32,7 +32,7 @@ export function Navbar() {
             href="#about"
             className="text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
-            About
+            Why {PRODUCT_NAME}
           </Link>
         </div>
 

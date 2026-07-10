@@ -3,8 +3,7 @@
 import { useCallback, useMemo, useState } from "react"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
-import { Button, buttonVariants } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -312,18 +311,16 @@ export function TimelineClient({
   }
 
   const targetCount = hasTarget ? 1 : 0
-  const journeySubtitle = `A living timeline that adapts to every grade, every deadline. Currently mapped: ${mappedSemesters} semester${mappedSemesters === 1 ? "" : "s"} · ${targetCount} target.`
+  const journeySubtitle = `Plan your courses term by term and keep deadlines in view. ${mappedSemesters} semester${mappedSemesters === 1 ? "" : "s"} mapped · ${targetCount} target school.`
 
   return (
     <div className="mx-auto max-w-3xl space-y-10 tp-stagger-children">
       <div className="space-y-4">
-        <p className="font-mono text-[10px] font-medium uppercase tracking-widest text-accent">
-          Journey map
+        <p className="text-[11px] font-medium uppercase tracking-widest text-accent">
+          Timeline
         </p>
-        <h1 className="font-heading text-balance text-3xl font-semibold tracking-tight text-foreground md:text-4xl lg:text-[2.5rem]">
-          From <span className="italic">where</span>
-          {" "}
-          you are to where you&apos;re going.
+        <h1 className="font-heading text-balance text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
+          Semester timeline
         </h1>
         <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-[15px]">
           {journeySubtitle}
@@ -346,7 +343,7 @@ export function TimelineClient({
         id="semester-roadmap"
         className="flex scroll-mt-24 flex-wrap items-center justify-between gap-4 border-b border-border pb-6"
       >
-        <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+        <span className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground">
           Semester roadmap
         </span>
         <div className="flex items-center gap-3">

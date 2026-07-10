@@ -24,8 +24,10 @@ export const CTA_SEE_HOW = "See how it works"
 
 export const CTA_GET_STARTED = "Get started"
 
-export const TRUST_LINE =
-  "Trusted by thousands of Texas students mapping their transfer"
+/** Honest positioning — no inflated social proof. */
+export const TRUST_LINE = "Free · Open source · Built for Texas transfer students"
+
+export const TRUST_BADGES = ["Free to use", "Open source", "Texas-first"] as const
 
 /** Transactional email / product line (plain text). */
 export const EMAIL_PRODUCT_LINE = PRODUCT_NAME

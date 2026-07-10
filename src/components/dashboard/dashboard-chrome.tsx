@@ -21,9 +21,7 @@ export function DashboardChrome({ initials, children }: DashboardChromeProps) {
       <header className="sticky top-0 z-30 hidden border-b border-border bg-background/85 backdrop-blur-md md:flex">
         <div className="flex h-14 w-full items-center justify-between gap-6 px-4 lg:px-10">
           <div className="flex min-w-0 items-center gap-2 text-sm">
-            <span className="font-mono text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
-              Mission control
-            </span>
+            <span className="text-sm text-muted-foreground">{PRODUCT_NAME}</span>
             <span className="text-muted-foreground/50" aria-hidden>
               /
             </span>
@@ -31,22 +29,12 @@ export function DashboardChrome({ initials, children }: DashboardChromeProps) {
           </div>
 
           <div className="flex shrink-0 items-center gap-3">
-            <button
-              type="button"
-              className="relative rounded-full border border-transparent p-2 text-muted-foreground outline-none transition hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/45"
-              aria-label="Notifications (coming soon)"
+            <Link
+              href={settingsPath("notifications")}
+              className="rounded-full border border-transparent p-2 text-muted-foreground outline-none transition hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/45"
+              aria-label="Notification settings"
             >
               <Bell className="h-5 w-5" strokeWidth={1.5} />
-              <span
-                className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-accent shadow-sm ring-2 ring-background"
-                aria-hidden
-              />
-            </button>
-            <Link
-              href="/dashboard/settings"
-              className="hidden text-xs text-muted-foreground transition-colors hover:text-foreground xl:inline"
-            >
-              {PRODUCT_NAME}
             </Link>
             <Link
               href="/dashboard/settings"

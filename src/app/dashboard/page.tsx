@@ -14,7 +14,7 @@ export default async function DashboardPage() {
   } = await supabase.auth.getUser()
   if (!user) redirect("/login")
 
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from("user_profiles")
     .select(
       `
@@ -26,16 +26,24 @@ export default async function DashboardPage() {
     .eq("id", user.id)
     .single()
 
+  if (profileError) {
+    console.error("[dashboard] failed to fetch profile:", profileError.message)
+  }
+
   const targetId = profile?.target_university_id ?? null
   const hasTargetUniversity = targetId != null
   const expectedTerm = profile?.expected_transfer_term ?? null
-  const [nextDeadline, deadlineRows, readiness] = await Promise.all([
+  const [nextDeadline, deadlineRowsRaw, readinessRaw] = await Promise.all([
     getCachedNextDeadline(targetId, expectedTerm),
     getCachedRequirementDeadlines(targetId, expectedTerm),
     getCachedDashboardReadiness(user.id),
   ])
 
-  const [{ data: userCourses }, { data: essayRows }, { data: checklistRows }] = await Promise.all([
+  const [
+    { data: userCoursesRaw, error: userCoursesError },
+    { data: essayRowsRaw, error: essayRowsError },
+    { data: checklistRowsRaw, error: checklistRowsError },
+  ] = await Promise.all([
     supabase
       .from("user_courses")
       .select("id, course_name, status, semester_taken")
@@ -44,8 +52,24 @@ export default async function DashboardPage() {
     supabase.from("user_checklist_items").select("task_key, is_complete").eq("user_id", user.id),
   ])
 
+  if (userCoursesError) {
+    console.error("[dashboard] failed to fetch user_courses:", userCoursesError.message)
+  }
+  if (essayRowsError) {
+    console.error("[dashboard] failed to fetch user_essays:", essayRowsError.message)
+  }
+  if (checklistRowsError) {
+    console.error("[dashboard] failed to fetch user_checklist_items:", checklistRowsError.message)
+  }
+
+  const userCourses = userCoursesRaw ?? []
+  const essayRows = essayRowsRaw ?? []
+  const checklistRows = checklistRowsRaw ?? []
+  const deadlineRows = deadlineRowsRaw ?? []
+  const readiness = readinessRaw ?? { score: 0, breakdown: [] }
+
   const checklistCompleteByTaskKey: Record<string, boolean | undefined> = Object.fromEntries(
-    (checklistRows ?? []).map((r) => [r.task_key, r.is_complete === true])
+    checklistRows.map((r) => [r.task_key, r.is_complete === true])
   )
 
   const recommendationLettersDone =
@@ -54,15 +78,15 @@ export default async function DashboardPage() {
   const officialTranscriptRequested =
     checklistCompleteByTaskKey.request_transcript === true
 
-  const userCourseRows: UserCourseRow[] = (userCourses ?? []).map((r) => ({
+  const userCourseRows: UserCourseRow[] = userCourses.map((r) => ({
     course_name: r.course_name,
     status: r.status,
   }))
 
-  const timelineCourses = (userCourses ?? []).map((r) => ({
+  const timelineCourses = userCourses.map((r) => ({
     id: r.id,
     course_name: r.course_name,
-    status: r.status as "completed" | "in_progress" | "planned",
+    status: (r.status as "completed" | "in_progress" | "planned") ?? "planned",
     semester_taken: r.semester_taken,
   }))
 
@@ -97,8 +121,8 @@ export default async function DashboardPage() {
     targetSchoolName,
     targetMajor: profile?.target_major ?? null,
     transferTerm,
-    overallReadinessScore: readiness.score,
-    readinessBreakdown: readiness.breakdown,
+    overallReadinessScore: readiness.score ?? 0,
+    readinessBreakdown: readiness.breakdown ?? [],
     nextDeadline,
     deadlineRows,
     timelineCourses,

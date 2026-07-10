@@ -111,7 +111,7 @@ function PathwayPanel({
 
   return (
     <div className="border-b border-sidebar-border px-4 py-4">
-      <p className="font-mono text-[10px] font-medium uppercase tracking-widest text-sidebar-foreground/45">
+      <p className="text-[11px] font-medium uppercase tracking-widest text-sidebar-foreground/45">
         Current pathway
       </p>
       <p className="mt-2 font-heading text-base leading-snug text-sidebar-foreground">{pathwayHeadline}</p>
@@ -138,7 +138,6 @@ function PathwayPanel({
 }
 
 export function DashboardSidebar({
-  displayName,
   initials,
   routeLabel,
   nextDeadline,
@@ -290,7 +289,7 @@ export function DashboardSidebar({
         />
 
         <nav className="flex-1 space-y-1 px-3 py-5">
-          <p className="px-3 pb-2 font-mono text-[10px] font-medium uppercase tracking-widest text-sidebar-foreground/40">
+          <p className="px-3 pb-2 text-[11px] font-medium uppercase tracking-widest text-sidebar-foreground/40">
             Workspace
           </p>
           <NavList pathname={pathname} />

@@ -1,55 +1,57 @@
 "use client"
 
+import { BookOpen, CalendarClock, ListChecks } from "lucide-react"
 import { PRODUCT_NAME } from "@/lib/brand"
 
-export function Testimonials() {
-  const testimonials = [
-    {
-      quote: `${PRODUCT_NAME} made the whole process so much clearer. I knew exactly what I needed to do each semester.`,
-      name: "Jamie R.",
-      path: "Dallas College → UT Austin",
-      initials: "JR",
-    },
-    {
-      quote:
-        "The readiness view helped me understand where I stood and what to improve next. I stayed on top of deadlines and got in.",
-      name: "Marcus T.",
-      path: "Collin College → Texas A&M",
-      initials: "MT",
-    },
-    {
-      quote:
-        "I was overwhelmed before. Now I have a clear roadmap and I'm on track to transfer next fall.",
-      name: "Sofia L.",
-      path: "ACC → UT Austin",
-      initials: "SL",
-    },
-  ]
+const pillars = [
+  {
+    icon: BookOpen,
+    title: "One plan, not ten tabs",
+    description:
+      "Courses, requirements, essays, and deadlines live together so you spend less time hunting and more time finishing.",
+  },
+  {
+    icon: CalendarClock,
+    title: "Deadlines you can act on",
+    description:
+      "Target-school dates are organized in one view. We still point you to official sources—this is a planner, not admissions advice.",
+  },
+  {
+    icon: ListChecks,
+    title: "Clear next steps",
+    description:
+      "Your checklist and timeline stay in sync as you add courses and update your profile, so momentum is easy to see.",
+  },
+] as const
 
+export function Testimonials() {
   return (
-    <section id="about" className="px-6 py-20">
+    <section id="about" className="border-t border-border bg-secondary/25 px-6 py-20">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-12 text-center tp-enter-fade-only">
-          <h2 className="mb-4 text-3xl font-semibold tracking-tight text-foreground">What students say</h2>
-          <p className="text-muted-foreground">
-            Texas students using TransferPath to plan with less stress
+        <div className="mb-12 max-w-2xl">
+          <h2 className="font-heading text-3xl font-semibold tracking-tight text-foreground">
+            Built for the transfer grind
+          </h2>
+          <p className="mt-3 text-lg leading-relaxed text-muted-foreground">
+            {PRODUCT_NAME} is for students who want structure without the noise—honest tooling for a
+            process that is already stressful enough.
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3 tp-stagger-children">
-          {testimonials.map((testimonial, index) => (
-            <div key={index} className="rounded-xl border border-border bg-card p-6 tp-interactive-panel">
-              <p className="mb-6 leading-relaxed text-foreground">&ldquo;{testimonial.quote}&rdquo;</p>
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
-                  <span className="text-sm font-medium text-primary">{testimonial.initials}</span>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-foreground">{testimonial.name}</p>
-                  <p className="text-xs text-muted-foreground">{testimonial.path}</p>
-                </div>
+        <div className="grid gap-5 md:grid-cols-3">
+          {pillars.map((pillar) => (
+            <article
+              key={pillar.title}
+              className="rounded-2xl border border-border bg-card p-6 shadow-sm"
+            >
+              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/8 text-primary">
+                <pillar.icon className="h-5 w-5" strokeWidth={1.5} aria-hidden />
               </div>
-            </div>
+              <h3 className="text-lg font-medium text-foreground">{pillar.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                {pillar.description}
+              </p>
+            </article>
           ))}
         </div>
       </div>

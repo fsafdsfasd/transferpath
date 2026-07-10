@@ -457,6 +457,6 @@ export function buildOverviewData(input: {
       : undefined,
     missingRequirements,
     recommendedActions,
-    recommendedHeadline: `Three moves to lift readiness toward ${Math.min(100, score + 8)}%.`,
+    recommendedHeadline: "What to work on next",
   }
 }

@@ -199,7 +199,7 @@ export function EssayClient({ userId, initialEssayMap, profile }: EssayClientPro
               )}
             >
               <span className="block">{prompt.label}</span>
-              <span className="mt-0.5 block font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+              <span className="mt-0.5 block text-[11px] uppercase tracking-wider text-muted-foreground">
                 {wc >= 50 ? `${wc} words` : "Not started"}
               </span>
             </button>
@@ -218,7 +218,7 @@ export function EssayClient({ userId, initialEssayMap, profile }: EssayClientPro
           eyebrow: "Essay workspace",
           title,
           subtitle,
-          tagline: "A distraction-free, focused space to write the essay that gets you in.",
+          tagline: "Draft, revise, and save your transfer essay in one place.",
           prompt: displayPrompt,
           wordLimit,
           autosaveLabel: formatEssayAutosaveLabel(savedAt, saving),
@@ -243,7 +243,7 @@ export function EssayClient({ userId, initialEssayMap, profile }: EssayClientPro
             <div className="space-y-1.5 sm:col-span-2">
               <label
                 htmlFor="essay-school-prompt"
-                className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground"
+                className="text-[11px] uppercase tracking-widest text-muted-foreground"
               >
                 Your school&apos;s exact prompt (optional)
               </label>
@@ -262,7 +262,7 @@ export function EssayClient({ userId, initialEssayMap, profile }: EssayClientPro
             <div className="space-y-1.5">
               <label
                 htmlFor="essay-word-limit"
-                className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground"
+                className="text-[11px] uppercase tracking-widest text-muted-foreground"
               >
                 Word limit
               </label>
@@ -289,13 +289,13 @@ export function EssayClient({ userId, initialEssayMap, profile }: EssayClientPro
           <DialogHeader>
             <DialogTitle className="font-heading">
               {title}
-              {subtitle ? <span className="italic font-normal"> — {subtitle}</span> : null}
+              {subtitle ? <span className="font-normal text-muted-foreground"> — {subtitle}</span> : null}
             </DialogTitle>
           </DialogHeader>
-          <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+          <p className="text-[11px] uppercase tracking-widest text-muted-foreground">
             Prompt
           </p>
-          <p className="mt-2 font-heading text-base italic leading-relaxed text-muted-foreground">
+          <p className="mt-2 text-base leading-relaxed text-muted-foreground">
             {displayPrompt}
           </p>
           <div className="mt-6 whitespace-pre-wrap font-heading text-lg leading-[1.7] text-foreground">

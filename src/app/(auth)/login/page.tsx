@@ -1,8 +1,8 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { Suspense, useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Eye, EyeOff, Loader2, X, Check } from "lucide-react"
 import { PRODUCT_NAME, TAGLINE, TRUST_LINE } from "@/lib/brand"
 import { createClient } from "@/lib/supabase/client"
@@ -20,21 +20,21 @@ function MiniDashboardPreview() {
       </div>
       <div className="space-y-2">
         <div className="flex items-center gap-2">
-          <span className="w-16 shrink-0 text-[10px] text-muted-foreground">Fall 2025</span>
+          <span className="w-16 shrink-0 text-[10px] text-muted-foreground">Spring 2026</span>
           <div className="flex h-6 flex-1 items-center rounded border border-chart-2/30 bg-chart-2/20 px-2">
             <span className="text-[10px] font-medium text-chart-2">4 courses · 13 cr</span>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-16 shrink-0 text-[10px] text-muted-foreground">Spring 2026</span>
+          <span className="w-16 shrink-0 text-[10px] text-muted-foreground">Fall 2026</span>
           <div className="flex h-6 flex-1 items-center rounded border border-chart-3/30 bg-chart-3/20 px-2">
             <span className="text-[10px] font-medium text-chart-3">5 courses · 15 cr</span>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-16 shrink-0 text-[10px] text-muted-foreground">Fall 2026</span>
+          <span className="w-16 shrink-0 text-[10px] text-muted-foreground">Spring 2027</span>
           <div className="flex h-6 flex-1 items-center rounded border border-primary/30 bg-primary/15 px-2">
-            <span className="text-[10px] font-medium text-primary">Apply · Deadline Mar 1</span>
+            <span className="text-[10px] font-medium text-primary">Apply · Deadline Aug 15</span>
           </div>
         </div>
       </div>
@@ -46,45 +46,49 @@ function MiniDashboardPreview() {
           aria-hidden="true"
         >
           <rect width="100" height="6" rx="3" className="fill-muted" />
-          <rect width="68" height="6" rx="3" className="fill-primary" />
+          <rect width="72" height="6" rx="3" className="fill-primary" />
         </svg>
-        <span className="text-[10px] text-muted-foreground">68% complete</span>
+        <span className="text-[10px] text-muted-foreground">72% complete</span>
       </div>
     </div>
   )
 }
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background" />}>
+      <LoginPageContent />
+    </Suspense>
+  )
+}
+
+function LoginPageContent() {
   const router = useRouter()
-  const [email, setEmail] = useState("")
+  const searchParams = useSearchParams()
+  const [email, setEmail] = useState(() => searchParams.get("email") ?? "")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
+  const [formError, setFormError] = useState("")
   const [showToast, setShowToast] = useState(false)
+
+  const paramError =
+    searchParams.get("signup") === "confirm-email"
+      ? "We created your account. Open the confirmation link in your email, then log in here to finish setup."
+      : searchParams.get("error") === "auth_failed"
+        ? "Sign-in link failed or expired. Try logging in with your email and password."
+        : ""
+  const error = formError || paramError
 
   const configIssue = supabasePublicEnvIssue()
   const supabaseReady = hasSupabasePublicEnv() && !configIssue
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    if (params.get("signup") === "confirm-email") {
-      setError(
-        "We created your account. Open the confirmation link in your email, then log in here to finish setup."
-      )
-    } else if (params.get("error") === "auth_failed") {
-      setError("Sign-in link failed or expired. Try logging in with your email and password.")
-    }
-    const prefill = params.get("email")
-    if (prefill) setEmail(prefill)
-  }, [])
-
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
-    setError("")
+    setFormError("")
 
     if (!supabaseReady) {
-      setError(configIssue ?? "Supabase is not configured on this deployment.")
+      setFormError(configIssue ?? "Supabase is not configured on this deployment.")
       return
     }
 
@@ -94,7 +98,7 @@ export default function LoginPage() {
     try {
       supabase = createClient()
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not connect to Supabase.")
+      setFormError(err instanceof Error ? err.message : "Could not connect to Supabase.")
       setLoading(false)
       return
     }
@@ -107,23 +111,23 @@ export default function LoginPage() {
     if (authError) {
       const msg = authError.message
       if (msg.includes("No API key found") || msg.includes("apikey")) {
-        setError(
+        setFormError(
           "Supabase API key is missing in this build. In Vercel, set NEXT_PUBLIC_SUPABASE_ANON_KEY (anon public JWT), enable Production, then redeploy without cache."
         )
       } else if (msg.includes("Invalid API key")) {
-        setError(
+        setFormError(
           "Invalid Supabase anon key. Use the anon public JWT from Supabase → Project Settings → API, not the service_role secret."
         )
       } else if (msg.includes("Email not confirmed") || msg.includes("email_not_confirmed")) {
-        setError(
+        setFormError(
           "Confirm your email first (check your inbox for a link from Supabase), then log in again."
         )
       } else if (msg.includes("Invalid login credentials")) {
-        setError(
+        setFormError(
           "Wrong email or password. If you just signed up, confirm your email first or use Get started to create an account."
         )
       } else {
-        setError(msg)
+        setFormError(msg)
       }
       setLoading(false)
       return
@@ -206,7 +210,7 @@ export default function LoginPage() {
             disabled={!supabaseReady}
             onClick={async () => {
               if (!supabaseReady) return
-              setError("")
+              setFormError("")
               try {
                 const supabase = createClient()
                 const { error: oauthError } = await supabase.auth.signInWithOAuth({
@@ -215,9 +219,9 @@ export default function LoginPage() {
                     redirectTo: `${window.location.origin}/auth/callback`,
                   },
                 })
-                if (oauthError) setError(oauthError.message)
+                if (oauthError) setFormError(oauthError.message)
               } catch (err) {
-                setError(err instanceof Error ? err.message : "Could not start Google sign-in.")
+                setFormError(err instanceof Error ? err.message : "Could not start Google sign-in.")
               }
             }}
             className="flex h-10 w-full items-center justify-center gap-3 rounded-lg border border-border bg-card text-sm font-medium text-foreground transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60"
@@ -258,7 +262,7 @@ export default function LoginPage() {
             <div className="flex items-start gap-3 rounded-lg border border-destructive/25 bg-destructive/10 px-3 py-2.5 text-sm text-destructive">
               <span className="flex-1">{error}</span>
               <button
-                onClick={() => setError("")}
+                onClick={() => setFormError("")}
                 className="shrink-0 text-destructive/70 hover:text-destructive"
               >
                 <X className="h-4 w-4" strokeWidth={1.5} />

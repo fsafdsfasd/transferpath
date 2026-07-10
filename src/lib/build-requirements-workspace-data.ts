@@ -339,17 +339,13 @@ export function buildRequirementsWorkspaceData(
   const planningNotesIntro =
     "Texas-wide transfer context that applies no matter which school you choose — planning only, not official requirements."
 
-  const termPhrase = term ? ` · ${term}` : ""
-  const subtitle = targetName
-    ? `Planning view for ${targetName} — ${major}${termPhrase}. Course status from ${currentName}; verify equivalencies on official pages.`
-    : `Set a target school in Settings. We track courses from ${currentName} against statewide and field-aware prep suggestions.`
-
+  // Subtitle removed: keep requirements header concise.
   return {
     header: {
       eyebrow: "Requirements",
-      title: "Major-specific pathway,",
-      titleItalic: "audited.",
-      subtitle,
+      title: "Requirements",
+      titleItalic: "",
+      subtitle: "Track prerequisites, credits, and application materials in one view.",
     },
     categories,
     planningNotes: planningNotes.map((n) => ({

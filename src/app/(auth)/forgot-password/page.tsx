@@ -53,7 +53,7 @@ export default function ForgotPasswordPage() {
             </div>
           ) : (
             <>
-              <p className="font-mono text-[10px] font-medium uppercase tracking-widest text-accent">
+              <p className="text-[11px] font-medium uppercase tracking-widest text-accent">
                 Account recovery
               </p>
               <h2 className="font-heading mt-3 text-xl font-semibold tracking-tight text-foreground">

@@ -316,9 +316,9 @@ export function SettingsClient({
         </p>
       </div>
 
-      <div className="px-8 pb-12 flex gap-6">
-        <nav className="w-[180px] shrink-0">
-          <ul className="space-y-0.5">
+      <div className="px-8 pb-12 flex flex-col gap-6 lg:flex-row lg:gap-8">
+        <nav className="w-full lg:w-[180px] lg:shrink-0">
+          <ul className="flex flex-row flex-wrap gap-1 lg:flex-col lg:flex-nowrap">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id
               return (
@@ -344,7 +344,7 @@ export function SettingsClient({
           </ul>
         </nav>
 
-        <div className="flex-1 max-w-2xl">
+        <div className="flex-1 min-w-0">
           <div className="rounded-xl border border-border bg-card p-6">
             {!profile && (
               <p className="text-sm text-destructive mb-4">

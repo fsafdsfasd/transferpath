@@ -27,27 +27,27 @@ export function HowItWorks() {
   return (
     <section id="how-it-works" className="px-6 py-20">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-12 text-center tp-enter-fade-only">
-          <h2 className="mb-4 text-3xl font-semibold tracking-tight text-foreground">How it works</h2>
-          <p className="mx-auto max-w-lg text-muted-foreground">
-            Three steps from sign-up to a living plan you can adjust anytime
+        <div className="mb-12 max-w-2xl">
+          <h2 className="font-heading text-3xl font-semibold tracking-tight text-foreground">
+            How it works
+          </h2>
+          <p className="mt-3 text-lg text-muted-foreground">
+            Three steps from sign-up to a living plan you can adjust anytime.
           </p>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-3 tp-stagger-children">
+        <div className="grid gap-5 md:grid-cols-3">
           {steps.map((step, index) => (
-            <div key={index} className="relative">
-              <div className="rounded-xl border border-border bg-card p-6 tp-interactive-panel">
-                <div className="mb-4 flex items-center gap-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
-                    <step.icon className="h-5 w-5 text-primary" strokeWidth={1.5} />
-                  </div>
-                  <span className="text-sm text-muted-foreground">Step {index + 1}</span>
+            <article key={step.title} className="rounded-2xl border border-border bg-card p-6">
+              <div className="mb-4 flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/8 text-primary">
+                  <step.icon className="h-5 w-5" strokeWidth={1.5} />
                 </div>
-                <h3 className="mb-2 text-lg font-medium text-foreground">{step.title}</h3>
-                <p className="text-sm leading-relaxed text-muted-foreground">{step.description}</p>
+                <span className="text-sm font-medium text-muted-foreground">Step {index + 1}</span>
               </div>
-            </div>
+              <h3 className="text-lg font-medium text-foreground">{step.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{step.description}</p>
+            </article>
           ))}
         </div>
       </div>

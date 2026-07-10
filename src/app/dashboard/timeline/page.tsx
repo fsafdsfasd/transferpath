@@ -14,7 +14,7 @@ export default async function TimelinePage() {
   } = await supabase.auth.getUser()
   if (!user) redirect("/login")
 
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from("user_profiles")
     .select(
       `
@@ -26,38 +26,65 @@ export default async function TimelinePage() {
     .eq("id", user.id)
     .single()
 
+  if (profileError) {
+    console.error("[dashboard/timeline] failed to fetch profile:", profileError.message)
+  }
+
   const targetId = profile?.target_university_id ?? null
   const expectedTerm = profile?.expected_transfer_term ?? null
 
-  const [{ data: rawCourses }, { data: checklistRows }, { data: essayRows }, nextDeadline, deadlineRows] =
-    await Promise.all([
-      supabase
-        .from("user_courses")
-        .select("id, course_name, status, semester_taken, canonical_course_id")
-        .eq("user_id", user.id)
-        .order("course_name", { ascending: true }),
-      supabase
-        .from("user_checklist_items")
-        .select("task_key, is_complete")
-        .eq("user_id", user.id),
-      supabase.from("user_essays").select("content").eq("user_id", user.id),
-      getCachedNextDeadline(targetId, expectedTerm),
-      getCachedRequirementDeadlines(targetId, expectedTerm),
-    ])
+  const [
+    { data: rawCourses, error: rawCoursesError },
+    { data: checklistRowsRaw, error: checklistRowsError },
+    { data: essayRowsRaw, error: essayRowsError },
+    nextDeadline,
+    deadlineRowsRaw,
+  ] = await Promise.all([
+    supabase
+      .from("user_courses")
+      .select("id, course_name, status, semester_taken, canonical_course_id")
+      .eq("user_id", user.id)
+      .order("course_name", { ascending: true }),
+    supabase
+      .from("user_checklist_items")
+      .select("task_key, is_complete")
+      .eq("user_id", user.id),
+    supabase.from("user_essays").select("content").eq("user_id", user.id),
+    getCachedNextDeadline(targetId, expectedTerm),
+    getCachedRequirementDeadlines(targetId, expectedTerm),
+  ])
+
+  if (rawCoursesError) {
+    console.error("[dashboard/timeline] failed to fetch user_courses:", rawCoursesError.message)
+  }
+  if (checklistRowsError) {
+    console.error(
+      "[dashboard/timeline] failed to fetch user_checklist_items:",
+      checklistRowsError.message
+    )
+  }
+  if (essayRowsError) {
+    console.error("[dashboard/timeline] failed to fetch user_essays:", essayRowsError.message)
+  }
+
+  const coursesRaw = rawCourses ?? []
+  const checklistRows = checklistRowsRaw ?? []
+  const essayRows = essayRowsRaw ?? []
+  const deadlineRows = deadlineRowsRaw ?? []
 
   const essayStarted =
-    essayRows?.some((e) => (e.content ?? "").trim().length > 0) ?? false
+    essayRows.some((e) => (e.content ?? "").trim().length > 0) ?? false
 
-  const courses: TimelineCourseRow[] = (rawCourses ?? []).map((r) => ({
+  const courses: TimelineCourseRow[] = coursesRaw.map((r) => ({
     id: r.id,
     course_name: r.course_name,
-    status: r.status as TimelineCourseRow["status"],
+    status: (r.status as TimelineCourseRow["status"]) ?? "planned",
     semester_taken: r.semester_taken,
     canonical_course_id: r.canonical_course_id,
   }))
 
   const checklistCompleteByTaskKey: Record<string, boolean | undefined> = Object.fromEntries(
-    (checklistRows ?? []).map((r) => [r.task_key, r.is_complete === true])
+    checklistRows.map((r) => [r.task_key, r.is_complete === true])
   )
 
   const checklistProfile: ChecklistProfileSummary = {
