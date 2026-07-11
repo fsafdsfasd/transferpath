@@ -302,12 +302,12 @@ export function RequirementsWorkspaceUi({
           sub="Action required"
           tone="muted"
         />
-        <div className="flex min-h-[140px] flex-col items-center justify-center rounded-2xl border border-border bg-primary p-6 text-center text-primary-foreground tp-interactive-panel">
-          <p className="text-[11px] font-medium uppercase tracking-widest text-accent">
+        <div className="flex min-h-[140px] flex-col items-center justify-center rounded-xl border border-border border-t-4 border-t-accent bg-card p-6 text-center">
+          <p className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground">
             Overall completion
           </p>
-          <p className="mt-3 font-heading text-4xl tabular-nums">{pct}%</p>
-          <div className="mt-4 h-1.5 w-full max-w-[10rem] overflow-hidden rounded-full bg-primary-foreground/10">
+          <p className="mt-3 font-heading text-4xl tabular-nums text-foreground">{pct}%</p>
+          <div className="mt-4 h-1.5 w-full max-w-[10rem] overflow-hidden rounded-full bg-secondary">
             <div
               className="h-full rounded-full bg-accent transition-all duration-700"
               style={{ width: `${pct}%` }}

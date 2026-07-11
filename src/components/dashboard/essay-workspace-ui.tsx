@@ -188,17 +188,17 @@ export function EssayWorkspaceUi({
             />
           ) : null}
           {reference ? (
-            <div className="rounded-2xl border border-border bg-primary p-6 text-primary-foreground">
-              <p className="text-[11px] font-medium uppercase tracking-widest text-accent">
+            <div className="rounded-xl border border-border border-l-4 border-l-accent bg-card p-6">
+              <p className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground">
                 {reference.eyebrow}
               </p>
-              <p className="mt-3 text-base leading-relaxed text-primary-foreground/90">
+              <p className="mt-3 text-base leading-relaxed text-foreground/90">
                 {reference.body}
               </p>
               <button
                 type="button"
                 onClick={reference.onCtaClick}
-                className="mt-5 w-full rounded-sm border border-primary-foreground/20 bg-primary-foreground/10 py-2.5 text-[11px] font-medium uppercase tracking-widest backdrop-blur-sm transition hover:bg-primary-foreground/15"
+                className="mt-5 w-full rounded-md border border-border-strong py-2.5 text-sm font-medium text-foreground transition hover:bg-muted"
               >
                 {reference.ctaLabel}
               </button>

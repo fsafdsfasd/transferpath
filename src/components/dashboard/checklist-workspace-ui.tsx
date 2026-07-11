@@ -170,9 +170,8 @@ function ChecklistWorkspaceBody({
         </div>
       </header>
 
-      <section className="relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-xl shadow-primary/5 sm:p-8 tp-interactive-panel">
-        <div className="absolute -right-16 -top-16 size-64 rounded-full bg-accent/5 blur-3xl" aria-hidden />
-        <div className="relative grid gap-8 md:grid-cols-[auto_1fr] md:items-center">
+      <section className="rounded-xl border border-border bg-card p-6 sm:p-8">
+        <div className="grid gap-8 md:grid-cols-[auto_1fr] md:items-center">
           <div className="relative mx-auto grid size-36 place-items-center sm:mx-0">
             <svg viewBox="0 0 80 80" className="absolute inset-0 -rotate-90" aria-hidden>
               <circle cx="40" cy="40" r={R} fill="none" stroke="currentColor" strokeWidth="8" className="text-muted/80" />

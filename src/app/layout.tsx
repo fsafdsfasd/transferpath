@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Inter, JetBrains_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { buildPageTitle, META_DESCRIPTION, PRODUCT_NAME } from "@/lib/brand";
 
-const fontPlayfair = Playfair_Display({
+const fontDisplay = Bricolage_Grotesque({
   subsets: ["latin"],
   variable: "--font-playfair",
   display: "swap",
@@ -49,7 +49,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${fontPlayfair.variable} ${fontInter.variable} ${fontMono.variable}`}>
+    <html lang="en" className={`${fontDisplay.variable} ${fontInter.variable} ${fontMono.variable}`}>
       <body className="min-h-screen bg-background font-sans antialiased">{children}</body>
     </html>
   );

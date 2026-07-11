@@ -1,55 +1,51 @@
 "use client"
 
-import { User, Map, CheckCircle } from "lucide-react"
+const steps = [
+  {
+    n: "1",
+    title: "Tell us your situation",
+    description:
+      "Current school, target university, major, GPA. Takes about two minutes — no essay required to start planning one.",
+  },
+  {
+    n: "2",
+    title: "Get your semester map",
+    description:
+      "Courses laid out term by term against your target's requirements, so the next registration decision is obvious.",
+  },
+  {
+    n: "3",
+    title: "Work the checklist",
+    description:
+      "Deadlines, transcripts, rec letters, essays. Check things off; your readiness picture updates as you go.",
+  },
+] as const
 
 export function HowItWorks() {
-  const steps = [
-    {
-      icon: User,
-      title: "Tell us your situation",
-      description:
-        "School, major, GPA, and target—about two minutes. Built first for Texas, structured to scale.",
-    },
-    {
-      icon: Map,
-      title: "Get your path",
-      description:
-        "See a semester-by-semester layout and the requirements we track so your next step stays obvious.",
-    },
-    {
-      icon: CheckCircle,
-      title: "Track momentum",
-      description:
-        "Check off milestones, watch deadlines, and revisit readiness as your profile evolves.",
-    },
-  ]
-
   return (
-    <section id="how-it-works" className="px-6 py-20">
-      <div className="mx-auto max-w-6xl">
-        <div className="mb-12 max-w-2xl">
+    <section id="how-it-works" className="border-b border-border px-6 py-20">
+      <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[4fr_8fr]">
+        <div>
           <h2 className="font-heading text-3xl font-semibold tracking-tight text-foreground">
             How it works
           </h2>
-          <p className="mt-3 text-lg text-muted-foreground">
-            Three steps from sign-up to a living plan you can adjust anytime.
+          <p className="mt-3 max-w-xs text-muted-foreground">
+            Sign-up to a living plan in three steps. Adjust it any semester.
           </p>
         </div>
-
-        <div className="grid gap-5 md:grid-cols-3">
-          {steps.map((step, index) => (
-            <article key={step.title} className="rounded-2xl border border-border bg-card p-6">
-              <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/8 text-primary">
-                  <step.icon className="h-5 w-5" strokeWidth={1.5} />
-                </div>
-                <span className="text-sm font-medium text-muted-foreground">Step {index + 1}</span>
+        <ol className="space-y-0">
+          {steps.map((step) => (
+            <li key={step.n} className="tp-ledger-row grid gap-4 py-6 sm:grid-cols-[3rem_1fr]">
+              <span className="font-mono text-sm text-accent">{step.n}</span>
+              <div>
+                <h3 className="text-lg font-medium text-foreground">{step.title}</h3>
+                <p className="mt-1.5 max-w-lg text-sm leading-relaxed text-muted-foreground">
+                  {step.description}
+                </p>
               </div>
-              <h3 className="text-lg font-medium text-foreground">{step.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{step.description}</p>
-            </article>
+            </li>
           ))}
-        </div>
+        </ol>
       </div>
     </section>
   )

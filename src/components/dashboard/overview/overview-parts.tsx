@@ -7,20 +7,20 @@ export function ReadinessRing({ value }: { value: number }) {
   return (
     <div className="relative size-32 shrink-0">
       <svg viewBox="0 0 100 100" className="size-full -rotate-90" aria-hidden>
-        <circle cx="50" cy="50" r={r} fill="none" stroke="oklch(1 0 0 / 0.08)" strokeWidth="6" />
+        <circle cx="50" cy="50" r={r} fill="none" stroke="var(--color-secondary)" strokeWidth="6" />
         <circle
           cx="50"
           cy="50"
           r={r}
           fill="none"
-          stroke="var(--color-success)"
+          stroke="var(--color-accent)"
           strokeWidth="6"
           strokeLinecap="round"
           strokeDasharray={c}
           strokeDashoffset={c * (1 - value / 100)}
         />
       </svg>
-      <span className="absolute inset-0 grid place-items-center font-heading text-3xl text-primary-foreground">
+      <span className="absolute inset-0 grid place-items-center font-heading text-3xl text-foreground">
         {value}%
       </span>
     </div>
@@ -31,10 +31,10 @@ export function SubMetricBar({ label, value }: SubMetric) {
   return (
     <div>
       <div className="flex justify-between text-xs">
-        <span className="font-mono uppercase tracking-widest text-primary-foreground/50">{label}</span>
-        <span className="font-mono text-primary-foreground/70">{value}</span>
+        <span className="uppercase tracking-wide text-muted-foreground">{label}</span>
+        <span className="font-mono tabular-nums text-foreground">{value}</span>
       </div>
-      <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-primary-foreground/10">
+      <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-secondary">
         <div className="h-full rounded-full bg-accent" style={{ width: `${value}%` }} />
       </div>
     </div>

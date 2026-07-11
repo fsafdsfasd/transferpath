@@ -75,21 +75,21 @@ export function OverviewMain({ data }: OverviewMainProps) {
       <div className={cn("grid lg:grid-cols-12", compact ? "gap-4" : "gap-6")}>
         <div
           className={cn(
-            "rounded-2xl border border-border bg-primary text-primary-foreground shadow-xl shadow-primary/10 lg:col-span-7",
+            "rounded-xl border border-border bg-card lg:col-span-7",
             compact ? "p-5 sm:p-6" : "p-6 sm:p-8"
           )}
         >
-          <p className="text-xs font-medium uppercase tracking-wide text-accent/90">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
             Transfer readiness
           </p>
           <div className="mt-6 flex flex-col items-start gap-8 sm:flex-row sm:items-end sm:gap-10">
             <ReadinessRing value={readiness.score} />
             <div className="min-w-0 flex-1">
-              <p className="font-heading text-5xl leading-none md:text-6xl">
+              <p className="font-heading text-5xl leading-none text-foreground md:text-6xl">
                 {readiness.score}
-                <span className="text-2xl text-primary-foreground/40">%</span>
+                <span className="text-2xl text-muted-foreground/60">%</span>
               </p>
-              <p className="mt-2 text-sm text-primary-foreground/70">{readiness.deltaLabel}</p>
+              <p className="mt-2 text-sm text-muted-foreground">{readiness.deltaLabel}</p>
               <div className="mt-6 grid grid-cols-2 gap-4">
                 {readiness.subMetrics.map((m) => (
                   <SubMetricBar key={m.label} {...m} />
@@ -101,34 +101,36 @@ export function OverviewMain({ data }: OverviewMainProps) {
 
         <div
           className={cn(
-            "flex flex-col rounded-2xl border border-border bg-accent text-accent-foreground shadow-xl shadow-accent/10 lg:col-span-5",
+            "flex flex-col rounded-xl border border-border border-l-4 border-l-accent bg-card lg:col-span-5",
             compact ? "p-5 sm:p-6" : "p-6 sm:p-8"
           )}
         >
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 text-accent">
             <Flame className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
             <p className="text-xs font-medium uppercase tracking-wide">Next step</p>
           </div>
-          <h3 className="mt-5 font-heading text-2xl leading-tight md:text-3xl">{nextAction.title}</h3>
-          <p className="mt-3 text-sm text-accent-foreground/80">{nextAction.dueLabel}</p>
+          <h3 className="mt-5 font-heading text-2xl leading-tight text-foreground md:text-3xl">
+            {nextAction.title}
+          </h3>
+          <p className="mt-3 text-sm text-muted-foreground">{nextAction.dueLabel}</p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
               href={nextAction.primaryHref}
-              className="rounded-sm bg-primary/90 px-5 py-2.5 text-sm font-medium text-primary-foreground transition hover:bg-primary"
+              className="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
             >
               Go to task
             </Link>
             <Link
               href="/dashboard/checklist"
-              className="rounded-sm border border-primary-foreground/30 px-5 py-2.5 text-sm font-medium transition hover:bg-primary-foreground/10"
+              className="rounded-md border border-border-strong px-5 py-2.5 text-sm font-medium text-foreground transition hover:bg-muted"
             >
               Open checklist
             </Link>
           </div>
           {nextAction.followUpLabel ? (
-            <div className="mt-8 border-t border-primary-foreground/20 pt-4">
-              <p className="text-[11px] uppercase tracking-widest opacity-70">Then up next</p>
-              <p className="mt-1 text-sm">{nextAction.followUpLabel}</p>
+            <div className="mt-8 border-t border-border pt-4">
+              <p className="text-[11px] uppercase tracking-widest text-muted-foreground">Then up next</p>
+              <p className="mt-1 text-sm text-foreground">{nextAction.followUpLabel}</p>
             </div>
           ) : null}
         </div>
