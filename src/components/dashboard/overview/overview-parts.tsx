@@ -84,7 +84,7 @@ export function RoadmapTrack({
               <p className="mt-4 w-full break-words text-sm font-medium leading-snug">
                 {s.title}
               </p>
-              <p className="mt-0.5 w-full break-words text-[11px] uppercase leading-tight tracking-widest text-muted-foreground">
+              <p className="mt-0.5 w-full break-words tp-eyebrow leading-tight text-muted-foreground">
                 {s.term}
               </p>
             </div>

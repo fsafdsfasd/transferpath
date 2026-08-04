@@ -56,7 +56,7 @@ export function SemesterRoadmap({
                   >
                     <span>{c.course_name}</span>
                     {c.semester_taken?.trim() ? (
-                      <span className="mt-0.5 text-[10px] font-normal text-muted-foreground">
+                      <span className="mt-0.5 text-micro font-normal text-muted-foreground">
                         {c.semester_taken.trim()}
                       </span>
                     ) : null}

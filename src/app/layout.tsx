@@ -5,7 +5,7 @@ import { buildPageTitle, META_DESCRIPTION, PRODUCT_NAME } from "@/lib/brand";
 
 const fontDisplay = Bricolage_Grotesque({
   subsets: ["latin"],
-  variable: "--font-playfair",
+  variable: "--font-display",
   display: "swap",
 });
 

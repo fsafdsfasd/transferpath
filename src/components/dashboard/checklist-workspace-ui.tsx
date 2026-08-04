@@ -147,7 +147,7 @@ function ChecklistWorkspaceBody({
   return (
     <div className="mx-auto max-w-5xl space-y-10 tp-stagger-children">
       <header className="space-y-3">
-        <p className="text-[11px] font-medium uppercase tracking-widest text-accent">
+        <p className="tp-eyebrow text-accent">
           {h.eyebrow ?? "Checklist"}
         </p>
         <h1 className="font-heading text-4xl font-semibold tracking-tight text-foreground md:text-5xl">
@@ -162,7 +162,7 @@ function ChecklistWorkspaceBody({
           {h.lastUpdatedLabel ? (
             <>
               <span className="hidden h-1 w-1 rounded-full bg-muted-foreground/30 md:inline-block" />
-              <span className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
+              <span className="font-mono text-eyebrow uppercase tracking-wider text-muted-foreground">
                 Updated · {h.lastUpdatedLabel}
               </span>
             </>
@@ -192,7 +192,7 @@ function ChecklistWorkspaceBody({
               <div className="font-heading text-3xl font-semibold leading-none text-foreground">
                 {stats.done}
               </div>
-              <div className="mt-1 text-[11px] uppercase tracking-widest text-muted-foreground">
+              <div className="mt-1 tp-eyebrow text-muted-foreground">
                 of {stats.total}
               </div>
             </div>
@@ -254,7 +254,7 @@ function ChecklistWorkspaceBody({
               {typeof c.count === "number" && c.count > 0 ? (
                 <span
                   className={cn(
-                    "ml-0.5 grid h-4 min-w-4 place-items-center rounded-full px-1 text-[11px] font-semibold",
+                    "ml-0.5 grid h-4 min-w-4 place-items-center rounded-full px-1 text-eyebrow font-semibold",
                     active ? "bg-accent text-accent-foreground" : "bg-accent/15 text-accent"
                   )}
                 >
@@ -294,7 +294,7 @@ function ChecklistWorkspaceBody({
                     <h2 className="font-heading text-xl font-semibold tracking-tight text-foreground">
                       {cat.label} Tasks
                     </h2>
-                    <p className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
+                    <p className="font-mono text-eyebrow uppercase tracking-wider text-muted-foreground">
                       {done}/{cat.tasks.length} complete
                     </p>
                   </div>
@@ -347,14 +347,14 @@ function ChecklistWorkspaceBody({
                           >
                             {t.title}
                             {t.hint ? (
-                              <span className="ml-2 font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
+                              <span className="ml-2 font-mono text-eyebrow uppercase tracking-wider text-muted-foreground">
                                 [{t.hint}]
                               </span>
                             ) : null}
                           </p>
                         </div>
                         {t.urgent && !isDone ? (
-                          <span className="hidden items-center gap-1 rounded-full bg-accent/10 px-2 py-0.5 text-[11px] font-medium uppercase tracking-wider text-accent sm:inline-flex">
+                          <span className="hidden items-center gap-1 rounded-full bg-accent/10 px-2 py-0.5 tp-eyebrow text-accent sm:inline-flex">
                             <FlameIcon className="size-3" /> Urgent
                           </span>
                         ) : null}

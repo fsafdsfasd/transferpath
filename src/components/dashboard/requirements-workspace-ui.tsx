@@ -149,7 +149,7 @@ function WorkspaceSectionHeader({
     <div className="mb-4 space-y-1">
       <div className="flex items-baseline justify-between gap-4">
         <h2 className="font-heading text-2xl text-foreground">{title}</h2>
-        <p className="shrink-0 text-[11px] uppercase tracking-widest text-muted-foreground">
+        <p className="shrink-0 tp-eyebrow text-muted-foreground">
           {meta}
         </p>
       </div>
@@ -273,7 +273,7 @@ export function RequirementsWorkspaceUi({
   return (
     <div className="mx-auto max-w-6xl space-y-10 tp-stagger-children">
       <header>
-        <p className="text-[11px] font-medium uppercase tracking-widest text-accent">
+        <p className="tp-eyebrow text-accent">
           {h.eyebrow ?? "Requirements"}
         </p>
         <h1 className="mt-3 font-heading text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
@@ -303,7 +303,7 @@ export function RequirementsWorkspaceUi({
           tone="muted"
         />
         <div className="flex min-h-[140px] flex-col items-center justify-center rounded-xl border border-border border-t-4 border-t-accent bg-card p-6 text-center">
-          <p className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground">
+          <p className="tp-eyebrow text-muted-foreground">
             Overall completion
           </p>
           <p className="mt-3 font-heading text-4xl tabular-nums text-foreground">{pct}%</p>

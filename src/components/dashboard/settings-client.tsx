@@ -61,8 +61,8 @@ interface SettingsClientProps {
 function SectionHeader({ title, subtitle }: { title: string; subtitle?: string }) {
   return (
     <div className="mb-4">
-      <h3 className="text-[15px] font-medium text-foreground">{title}</h3>
-      {subtitle && <p className="mt-0.5 text-[13px] text-muted-foreground">{subtitle}</p>}
+      <h3 className="text-body font-medium text-foreground">{title}</h3>
+      {subtitle && <p className="mt-0.5 text-caption text-muted-foreground">{subtitle}</p>}
     </div>
   )
 }

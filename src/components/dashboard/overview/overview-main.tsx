@@ -41,7 +41,7 @@ export function OverviewMain({ data }: OverviewMainProps) {
         )}
       >
         <div>
-          <p className="text-[11px] font-medium uppercase tracking-widest text-accent">
+          <p className="tp-eyebrow text-accent">
             {user.todayLabel}
           </p>
           <h1
@@ -52,7 +52,7 @@ export function OverviewMain({ data }: OverviewMainProps) {
           >
             {user.greetingLine}
           </h1>
-          <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground md:text-[15px]">
+          <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground md:text-body">
             {user.subcopy}
           </p>
         </div>
@@ -129,7 +129,7 @@ export function OverviewMain({ data }: OverviewMainProps) {
           </div>
           {nextAction.followUpLabel ? (
             <div className="mt-8 border-t border-border pt-4">
-              <p className="text-[11px] uppercase tracking-widest text-muted-foreground">Then up next</p>
+              <p className="tp-eyebrow text-muted-foreground">Then up next</p>
               <p className="mt-1 text-sm text-foreground">{nextAction.followUpLabel}</p>
             </div>
           ) : null}
@@ -154,7 +154,7 @@ export function OverviewMain({ data }: OverviewMainProps) {
               ) : null}
             </h2>
             {pathway.semesterCount > 0 ? (
-              <p className="mt-1 text-[11px] uppercase tracking-widest text-muted-foreground">
+              <p className="mt-1 tp-eyebrow text-muted-foreground">
                 {pathway.semesterCount} phase{pathway.semesterCount === 1 ? "" : "s"} on your timeline
               </p>
             ) : null}
@@ -179,7 +179,7 @@ export function OverviewMain({ data }: OverviewMainProps) {
           <div className="mb-6 flex items-center justify-between gap-4">
             <h2 className="font-heading text-xl text-foreground md:text-2xl">Upcoming deadlines</h2>
             {deadlinesCycleLabel ? (
-              <span className="text-[11px] uppercase tracking-widest text-muted-foreground">
+              <span className="tp-eyebrow text-muted-foreground">
                 {deadlinesCycleLabel}
               </span>
             ) : null}
@@ -196,7 +196,7 @@ export function OverviewMain({ data }: OverviewMainProps) {
                   className="flex items-center justify-between gap-3 rounded-sm border border-border px-4 py-3.5 transition-colors hover:border-border-strong"
                 >
                   <div className="flex min-w-0 items-center gap-4">
-                    <span className="w-14 shrink-0 text-[11px] font-medium uppercase tracking-widest text-muted-foreground sm:w-16">
+                    <span className="w-14 shrink-0 tp-eyebrow text-muted-foreground sm:w-16">
                       {d.date}
                     </span>
                     <div className="flex min-w-0 items-center gap-3">
@@ -213,7 +213,7 @@ export function OverviewMain({ data }: OverviewMainProps) {
                       <span className="truncate text-sm font-medium">{d.title}</span>
                     </div>
                   </div>
-                  <span className="hidden shrink-0 text-[11px] uppercase tracking-widest text-muted-foreground sm:inline">
+                  <span className="hidden shrink-0 tp-eyebrow text-muted-foreground sm:inline">
                     {d.tag}
                   </span>
                 </div>
@@ -249,7 +249,7 @@ export function OverviewMain({ data }: OverviewMainProps) {
                     <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-accent" strokeWidth={1.5} />
                     <div>
                       <p className="text-sm font-semibold">{r.title}</p>
-                      <p className="mt-0.5 text-[11px] uppercase tracking-widest text-muted-foreground">
+                      <p className="mt-0.5 tp-eyebrow text-muted-foreground">
                         {r.code} · {r.note}
                       </p>
                     </div>

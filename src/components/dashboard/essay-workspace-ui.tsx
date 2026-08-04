@@ -74,7 +74,7 @@ export function EssayWorkspaceUi({
     <div className={cn("mx-auto max-w-7xl space-y-8 animate-fade-in tp-stagger-children", className)}>
       <header className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
         <div>
-          <p className="text-[11px] font-medium uppercase tracking-widest text-accent">
+          <p className="tp-eyebrow text-accent">
             {essay.eyebrow ?? "Essay workspace"}
           </p>
           <h1 className="mt-3 font-heading text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
@@ -84,7 +84,7 @@ export function EssayWorkspaceUi({
             ) : null}
           </h1>
           {essay.tagline ? (
-            <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground md:text-[15px]">
+            <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground md:text-body">
               {essay.tagline}
             </p>
           ) : null}
@@ -115,7 +115,7 @@ export function EssayWorkspaceUi({
           <div className="absolute left-0 right-0 top-0 h-1 bg-accent" aria-hidden />
 
           <div className="border-b border-border px-6 pt-8 pb-6 sm:px-10 sm:pt-10">
-            <p className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground">
+            <p className="tp-eyebrow text-muted-foreground">
               Prompt
             </p>
             <p className="mt-2 text-base leading-relaxed text-foreground/85">
@@ -137,7 +137,7 @@ export function EssayWorkspaceUi({
           <div className="flex flex-col gap-4 border-t border-border px-6 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-10">
             <div className="flex items-center gap-6">
               <div>
-                <p className="text-[11px] uppercase tracking-widest text-muted-foreground">
+                <p className="tp-eyebrow text-muted-foreground">
                   Word count
                 </p>
                 <p
@@ -163,7 +163,7 @@ export function EssayWorkspaceUi({
               </div>
             </div>
             {essay.autosaveLabel ? (
-              <p className="text-[11px] uppercase tracking-widest text-muted-foreground">
+              <p className="tp-eyebrow text-muted-foreground">
                 {essay.autosaveLabel}
               </p>
             ) : null}
@@ -189,7 +189,7 @@ export function EssayWorkspaceUi({
           ) : null}
           {reference ? (
             <div className="rounded-xl border border-border border-l-4 border-l-accent bg-card p-6">
-              <p className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground">
+              <p className="tp-eyebrow text-muted-foreground">
                 {reference.eyebrow}
               </p>
               <p className="mt-3 text-base leading-relaxed text-foreground/90">
@@ -225,7 +225,7 @@ function CoachPanel({
     <div className="rounded-2xl border border-border bg-card p-6 tp-interactive-panel">
       <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent-soft px-2.5 py-1 text-accent">
         {icon}
-        <span className="text-[11px] font-medium uppercase tracking-widest">{label}</span>
+        <span className="tp-eyebrow">{label}</span>
       </div>
       <p className="mb-3 font-heading text-lg leading-snug text-foreground">{title}</p>
       <ul className="space-y-2.5">
