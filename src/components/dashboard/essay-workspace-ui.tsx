@@ -2,6 +2,7 @@
 
 import { useMemo, type ReactNode } from "react"
 import { Meter } from "@/components/ui/progress"
+import { Provenance } from "@/components/ui/provenance"
 import { cn } from "@/lib/utils"
 
 export interface EssayMeta {
@@ -10,6 +11,8 @@ export interface EssayMeta {
   tagline?: string
   prompt: string
   wordLimit: number
+  /** True when the limit is our 650-word default rather than one the student entered. */
+  wordLimitIsDefault?: boolean
   autosaveLabel?: string
   eyebrow?: string
 }
@@ -50,7 +53,7 @@ export function EssayWorkspaceUi({
   coachNotes = [],
   coachTitle = "Three notes on this draft",
   strengthSignals = [],
-  strengthsTitle = "What admissions will see",
+  strengthsTitle = "What this draft currently does",
   reference,
   onPreview,
   onSave,
@@ -150,6 +153,13 @@ export function EssayWorkspaceUi({
                   {wordCount}{" "}
                   <span className="text-muted-foreground">/ {essay.wordLimit}</span>
                 </p>
+                {essay.wordLimitIsDefault ? (
+                  <Provenance
+                    level="estimated"
+                    basis="Typical limit — confirm your school's prompt"
+                    className="mt-1"
+                  />
+                ) : null}
               </div>
               <div className="h-8 w-32">
                 <Meter

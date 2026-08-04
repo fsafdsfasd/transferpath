@@ -217,9 +217,9 @@ function ChecklistWorkspaceBody({
             })}
             {h.readinessMessage ? (
               <p className="pt-2 text-sm text-muted-foreground">
-                You&apos;re{" "}
-                <span className="font-semibold text-foreground">{stats.pct}% ready</span> to apply.{" "}
-                <span>{h.readinessMessage}</span>
+                You&apos;ve completed{" "}
+                <span className="font-semibold text-foreground">{stats.pct}%</span> of your
+                checklist. <span>{h.readinessMessage}</span>
               </p>
             ) : null}
           </div>

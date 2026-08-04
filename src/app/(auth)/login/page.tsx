@@ -166,7 +166,7 @@ function LoginPageContent() {
           <ul className="space-y-3">
             {[
               "Personalized semester-by-semester roadmap",
-              "Tracks every deadline and requirement",
+              "Keeps your deadlines and requirements in one place",
               "Path readiness you can act on—not hype",
             ].map((item) => (
               <li key={item} className="flex items-start gap-3">

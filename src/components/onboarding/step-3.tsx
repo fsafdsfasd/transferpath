@@ -100,12 +100,17 @@ export function OnboardingStep3({ data, updateData, onNext, onBack }: Props) {
     return "var(--primary)"
   }
 
-  const getGpaLabel = (gpa: number) => {
-    if (gpa < 2.5) return "Below average"
-    if (gpa < 3.0) return "Average"
-    if (gpa < 3.5) return "Competitive"
-    return "Highly competitive"
-  }
+  /*
+    These bands used to read "Below average" through "Highly competitive",
+    which judged the student's chances against no stated basis and contradicted
+    the product's own promise not to predict admission. The 3.0 planner
+    benchmark is the only reference point TransferPath actually has, so the
+    label states that relationship and nothing more.
+  */
+  const getGpaLabel = (gpa: number) =>
+    gpa >= 3.0
+      ? "At or above the 3.0 planner benchmark"
+      : "Below the 3.0 planner benchmark"
 
   return (
     <div className="bg-card border border-border rounded-xl p-8">

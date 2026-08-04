@@ -221,6 +221,7 @@ export function EssayClient({ userId, initialEssayMap, profile }: EssayClientPro
           tagline: "Draft, revise, and save your transfer essay in one place.",
           prompt: displayPrompt,
           wordLimit,
+          wordLimitIsDefault: currentEssay?.word_limit == null,
           autosaveLabel: formatEssayAutosaveLabel(savedAt, saving),
         }}
         value={content}
