@@ -1,6 +1,7 @@
 "use client"
 
 import { AlertCircle, CheckCircle2, Circle, Info } from "lucide-react"
+import { Meter } from "@/components/ui/progress"
 import { cn } from "@/lib/utils"
 import { OfficialPrereqDisclaimer } from "@/components/dashboard/official-prereq-disclaimer"
 import { DeadlineOfficialLink } from "@/components/dashboard/deadline-official-link"
@@ -307,12 +308,12 @@ export function RequirementsWorkspaceUi({
             Overall completion
           </p>
           <p className="mt-3 font-heading text-4xl tabular-nums text-foreground">{pct}%</p>
-          <div className="mt-4 h-1.5 w-full max-w-[10rem] overflow-hidden rounded-full bg-secondary">
-            <div
-              className="h-full rounded-full bg-accent transition-all duration-700"
-              style={{ width: `${pct}%` }}
-            />
-          </div>
+          <Meter
+            value={pct}
+            label={`Overall completion: ${pct} percent`}
+            size="md"
+            className="mt-4 w-full max-w-[10rem]"
+          />
         </div>
       </div>
 

@@ -26,6 +26,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { buttonVariants } from "@/components/ui/button"
+import { Meter } from "@/components/ui/progress"
 
 const navItems = [
   { href: "/dashboard", label: "Overview", icon: Home },
@@ -124,12 +125,13 @@ function PathwayPanel({
         <p className="mt-0.5 text-xs text-sidebar-primary/90">Planning for {expectedTransferTerm}</p>
       ) : null}
       <div className="mt-4 flex items-center gap-2">
-        <div className="h-1 flex-1 overflow-hidden rounded-full bg-sidebar-foreground/15">
-          <svg className="h-1 w-full" viewBox="0 0 100 4" preserveAspectRatio="none" aria-hidden>
-            <rect width="100" height="4" rx="2" className="fill-sidebar-foreground/15" />
-            <rect width={readinessPct} height="4" rx="2" className="fill-sidebar-primary" />
-          </svg>
-        </div>
+        <Meter
+          value={readinessPct}
+          label={`Planner readiness: ${readinessPct} percent`}
+          className="flex-1"
+          trackClassName="bg-sidebar-foreground/15"
+          indicatorClassName="bg-sidebar-primary"
+        />
         <span className="font-mono text-micro font-medium text-sidebar-primary">{readinessPct}%</span>
       </div>
       <p className="mt-1.5 text-micro leading-snug text-sidebar-foreground/50">Planner readiness</p>

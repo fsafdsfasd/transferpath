@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Meter } from "@/components/ui/progress"
 import { cn } from "@/lib/utils"
 import type { ChecklistWorkspaceData, ChecklistWorkspaceTask } from "@/types/checklist-workspace"
 
@@ -199,7 +200,7 @@ function ChecklistWorkspaceBody({
           </div>
 
           <div className="space-y-4">
-            {stats.per.map((p, i) => {
+            {stats.per.map((p) => {
               const pct = p.total ? (p.done / p.total) * 100 : 0
               return (
                 <div key={p.id}>
@@ -210,12 +211,7 @@ function ChecklistWorkspaceBody({
                       <span className="text-muted-foreground/50">/{p.total}</span>
                     </span>
                   </div>
-                  <div className="h-1.5 overflow-hidden rounded-full bg-muted">
-                    <div
-                      className="h-full rounded-full bg-accent transition-[width] duration-700 ease-out"
-                      style={{ width: `${pct}%`, transitionDelay: `${i * 80}ms` }}
-                    />
-                  </div>
+                  <Meter value={pct} label={`${p.label}: ${p.done} of ${p.total} complete`} size="md" />
                 </div>
               )
             })}

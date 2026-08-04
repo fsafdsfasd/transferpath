@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo, type ReactNode } from "react"
+import { Meter } from "@/components/ui/progress"
 import { cn } from "@/lib/utils"
 
 export interface EssayMeta {
@@ -151,15 +152,12 @@ export function EssayWorkspaceUi({
                 </p>
               </div>
               <div className="h-8 w-32">
-                <div className="mt-3 h-1 overflow-hidden rounded-full bg-muted">
-                  <div
-                    className={cn(
-                      "h-full rounded-full transition-all duration-300",
-                      overLimit || pct > 95 ? "bg-accent" : "bg-success"
-                    )}
-                    style={{ width: `${pct}%` }}
-                  />
-                </div>
+                <Meter
+                  value={pct}
+                  label={`Word count: ${wordCount} of ${essay.wordLimit}`}
+                  tone={overLimit || pct > 95 ? "accent" : "success"}
+                  className="mt-3"
+                />
               </div>
             </div>
             {essay.autosaveLabel ? (

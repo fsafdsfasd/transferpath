@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Meter } from "@/components/ui/progress"
 import {
   Popover,
   PopoverContent,
@@ -206,15 +207,12 @@ export function OnboardingStep3({ data, updateData, onNext, onBack }: Props) {
             />
             {data.gpa && (
               <div className="mt-3">
-                <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all"
-                    style={{
-                      width: `${(gpaValue / 4) * 100}%`,
-                      backgroundColor: getGpaColor(gpaValue),
-                    }}
-                  />
-                </div>
+                <Meter
+                  value={(gpaValue / 4) * 100}
+                  label={`GPA ${gpaValue} out of 4.0 — ${getGpaLabel(gpaValue)}`}
+                  size="lg"
+                  indicatorStyle={{ backgroundColor: getGpaColor(gpaValue) }}
+                />
                 <p className="text-xs mt-1" style={{ color: getGpaColor(gpaValue) }}>
                   {getGpaLabel(gpaValue)}
                 </p>

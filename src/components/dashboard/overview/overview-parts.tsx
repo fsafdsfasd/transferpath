@@ -1,3 +1,4 @@
+import { Meter } from "@/components/ui/progress"
 import type { MilestoneState, SubMetric } from "@/types/overview"
 import type { RoadmapStep } from "@/types/overview"
 
@@ -21,7 +22,8 @@ export function ReadinessRing({ value }: { value: number }) {
         />
       </svg>
       <span className="absolute inset-0 grid place-items-center font-heading text-3xl text-foreground">
-        {value}%
+        <span aria-hidden="true">{value}%</span>
+        <span className="sr-only">Planner readiness: {value} percent complete</span>
       </span>
     </div>
   )
@@ -34,9 +36,7 @@ export function SubMetricBar({ label, value }: SubMetric) {
         <span className="uppercase tracking-wide text-muted-foreground">{label}</span>
         <span className="font-mono tabular-nums text-foreground">{value}</span>
       </div>
-      <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-secondary">
-        <div className="h-full rounded-full bg-accent" style={{ width: `${value}%` }} />
-      </div>
+      <Meter value={value} label={`${label}: ${value} out of 100`} className="mt-1.5" />
     </div>
   )
 }
