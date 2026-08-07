@@ -37,6 +37,8 @@ export type RequirementsTimelineRow = {
   dateLabel: string
   label: string
   scope: string
+  /** Per-row planning provenance from `deadlines.description`; null when absent. */
+  description: string | null
   officialUrl: string | null
   passed: boolean
   current: boolean

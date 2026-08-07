@@ -3,8 +3,8 @@
 import { AlertCircle, CheckCircle2, Circle, Info } from "lucide-react"
 import { Meter } from "@/components/ui/progress"
 import { cn } from "@/lib/utils"
-import { OfficialPrereqDisclaimer } from "@/components/dashboard/official-prereq-disclaimer"
 import { DeadlineOfficialLink } from "@/components/dashboard/deadline-official-link"
+import { Provenance } from "@/components/ui/provenance"
 import type {
   RequirementWorkspaceItem,
   RequirementsPlanningNote,
@@ -220,7 +220,7 @@ function DeadlineRow({ row, last }: { row: RequirementsTimelineRow; last: boolea
   return (
     <div
       className={cn(
-        "relative flex items-center justify-between gap-4 px-6 py-4",
+        "relative flex items-start justify-between gap-4 px-6 py-4",
         !last && "border-b border-border",
         row.current && "bg-accent/5"
       )}
@@ -231,13 +231,18 @@ function DeadlineRow({ row, last }: { row: RequirementsTimelineRow; last: boolea
           aria-hidden
         />
       ) : null}
-      <div className="flex min-w-0 items-center gap-5">
-        <DeadlineStatusIcon row={row} />
+      <div className="flex min-w-0 items-start gap-5">
+        <div className="mt-0.5 shrink-0">
+          <DeadlineStatusIcon row={row} />
+        </div>
         <div className="min-w-0">
           <p className="text-sm font-medium text-foreground">{row.label}</p>
-          <p className="mt-0.5 text-xs leading-snug text-muted-foreground">
+          <p className="mt-0.5 text-caption leading-snug text-muted-foreground">
             {deadlineSubline(row)}
           </p>
+          {row.description ? (
+            <Provenance level="estimated" basis={row.description} className="mt-1" />
+          ) : null}
         </div>
       </div>
       {row.officialUrl ? (
@@ -316,8 +321,6 @@ export function RequirementsWorkspaceUi({
           />
         </div>
       </div>
-
-      <OfficialPrereqDisclaimer />
 
       <div className="space-y-10">
         {data.categories.map((cat) => {

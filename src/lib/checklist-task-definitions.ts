@@ -256,7 +256,7 @@ export function buildTaskDefinitions(p: ChecklistProfileSummary): ChecklistSecti
           text: `Plan first semester at ${tgt} (tentative schedule)`,
           status: "not-started",
           action: "Preview →",
-          actionHref: "/dashboard/timeline",
+          actionHref: "/dashboard/plan",
         },
       ],
     },

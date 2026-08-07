@@ -5,6 +5,7 @@ import { DashboardSidebar } from "@/components/dashboard/sidebar"
 import { DashboardChrome } from "@/components/dashboard/dashboard-chrome"
 import { CompactDashboardProvider } from "@/components/dashboard/compact-dashboard-context"
 import { getCachedDashboardReadiness } from "@/lib/dashboard-readiness-loader"
+import { getCompletenessLadderState } from "@/lib/completeness-ladder"
 
 export default async function DashboardLayout({
   children,
@@ -15,15 +16,21 @@ export default async function DashboardLayout({
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect("/login")
 
-  const { data: profile } = await supabase
-    .from("user_profiles")
-    .select(`
+  const [{ data: profile }, { count: courseCount }] = await Promise.all([
+    supabase
+      .from("user_profiles")
+      .select(`
       *,
       current_university:current_university_id(name, abbreviation),
       target_university:target_university_id(name, abbreviation)
     `)
-    .eq("id", user.id)
-    .maybeSingle()
+      .eq("id", user.id)
+      .maybeSingle(),
+    supabase
+      .from("user_courses")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id),
+  ])
 
   if (!profile) {
     redirect("/onboarding")
@@ -44,6 +51,13 @@ export default async function DashboardLayout({
   const { score: pathwayReadinessScore } = await getCachedDashboardReadiness(user.id)
   const targetMajor = profile?.target_major ?? null
 
+  const completenessLadderState = getCompletenessLadderState({
+    hasTargetSchool: hasTargetUniversity,
+    hasExpectedTransferTerm: Boolean(expectedTerm?.trim()),
+    courseCount: courseCount ?? 0,
+    nearestDeadlineDaysUntil: nextDeadline?.daysUntil ?? null,
+  })
+
   return (
     <CompactDashboardProvider value={preferCompact}>
       <div className="flex min-h-screen bg-background tp-dashboard-bg">
@@ -54,6 +68,7 @@ export default async function DashboardLayout({
           nextDeadline={nextDeadline}
           hasTargetUniversity={hasTargetUniversity}
           pathwayReadinessScore={pathwayReadinessScore}
+          completenessLadderState={completenessLadderState}
           currentSchoolName={currentSchoolName}
           targetSchoolName={targetSchoolName}
           targetMajor={targetMajor}

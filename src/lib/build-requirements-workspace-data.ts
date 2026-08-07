@@ -28,7 +28,7 @@ import type {
   RequirementsWorkspaceData,
 } from "@/types/requirements-workspace"
 
-const TIMELINE_COURSES_HASH = "/dashboard/timeline#semester-roadmap"
+const PLAN_COURSES_HASH = "/dashboard/plan#semester-roadmap"
 
 const COMMON_PREREQ_KEYS = new Set(["english_comp_1", "english_comp_2", "gov"])
 
@@ -56,17 +56,9 @@ type AcademicRow = {
 
 const MINIMAL_FALLBACK_REQUIREMENT_NOTES: UniversityRequirementNote[] = [
   {
-    id: "static-fallback-verify",
-    university_id: null,
-    sort_order: 0,
-    title: "Always verify on official pages",
-    body: "Illustrative planning text cannot replace your target institution\u2019s live admissions, aid, and registrar information. Set a target school in Settings when you want school-specific notes.",
-    optional_url: null,
-  },
-  {
     id: "static-fallback-applytexas",
     university_id: null,
-    sort_order: 1,
+    sort_order: 0,
     title: "Texas application platforms",
     body: "Many Texas public institutions use ApplyTexas; others may require a separate portal. Confirm on each school\u2019s official application instructions.",
     optional_url: "https://www.goapplytexas.org/",
@@ -173,7 +165,7 @@ function coursePrereqRowToItem(row: AcademicRow): RequirementWorkspaceItem {
     equiv: `${row.required} · You: ${row.have}`,
     status: academicDisplayToRequirementStatus(row.status),
     ctaLabel: "Details",
-    href: TIMELINE_COURSES_HASH,
+    href: PLAN_COURSES_HASH,
   }
 }
 
@@ -202,6 +194,7 @@ function buildDeadlineTimeline(deadlines: RequirementDeadlineRow[], todayYmd: st
       dateLabel: formatDueDateDisplay(d.due_date),
       label: d.title,
       scope: d.timelineScope,
+      description: d.description?.trim() ? d.description.trim() : null,
       officialUrl: d.officialUrl,
       passed,
       current,
@@ -332,12 +325,20 @@ export function buildRequirementsWorkspaceData(
     items: applicationItems,
   })
 
-  const globalPlanningNotes = input.requirementNotes.filter((n) => n.university_id == null)
+  // Fetcher already returns school notes first (by sort_order), then statewide.
   const planningNotes =
-    globalPlanningNotes.length > 0 ? globalPlanningNotes : MINIMAL_FALLBACK_REQUIREMENT_NOTES
+    input.requirementNotes.length > 0
+      ? input.requirementNotes
+      : MINIMAL_FALLBACK_REQUIREMENT_NOTES
 
+  const hasSchoolNotes = planningNotes.some((n) => n.university_id != null)
+  const hasStatewideNotes = planningNotes.some((n) => n.university_id == null)
   const planningNotesIntro =
-    "Texas-wide transfer context that applies no matter which school you choose — planning only, not official requirements."
+    hasSchoolNotes && hasStatewideNotes
+      ? "Notes for your target school, then Texas-wide transfer context — planning only, not official requirements."
+      : hasSchoolNotes
+        ? "Notes for your target school — planning only, not official requirements."
+        : "Texas-wide transfer context that applies no matter which school you choose — planning only, not official requirements."
 
   // Subtitle removed: keep requirements header concise.
   return {

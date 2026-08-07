@@ -15,6 +15,9 @@ export function LandingFooter() {
           <Link href="/terms" className="text-sm text-muted-foreground hover:text-foreground">
             Terms
           </Link>
+          <Link href="/sources" className="text-sm text-muted-foreground hover:text-foreground">
+            Sources
+          </Link>
           <Link
             href="/login"
             className="text-sm text-muted-foreground hover:text-foreground"

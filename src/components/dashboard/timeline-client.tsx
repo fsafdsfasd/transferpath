@@ -317,10 +317,10 @@ export function TimelineClient({
     <div className="mx-auto max-w-3xl space-y-10 tp-stagger-children">
       <div className="space-y-4">
         <p className="tp-eyebrow text-accent">
-          Timeline
+          Plan
         </p>
         <h1 className="font-heading text-balance text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
-          Semester timeline
+          Your plan
         </h1>
         <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-body">
           {journeySubtitle}
